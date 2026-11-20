@@ -38,7 +38,7 @@ a{color:var(--ac)}
 
 /* Layout */
 #app{display:flex;min-height:100dvh}
-#main{flex:1;min-width:0;padding:calc(var(--st) + 22px) 20px calc(var(--sb) + 110px)}
+#main{flex:1;min-width:0;padding:calc(var(--st) + 26px) 20px calc(var(--sb) + 96px)}
 .wrap{max-width:1120px;margin:0 auto}
 .view{animation:vin .32s cubic-bezier(.2,.8,.2,1)}
 @keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -148,7 +148,7 @@ h1.title{margin:4px 0 0;font-family:var(--serif);font-weight:400;font-size:40px;
 .ttg .c.f{border:0;background:var(--card)}
 
 /* Nav */
-nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:8px 8px calc(var(--sb) + 6px);background:var(--nav);border-top:1px solid var(--line);-webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px)}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:6px 8px max(6px, calc(var(--sb) - 16px));background:var(--nav);border-top:1px solid var(--line);-webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px)}
 nav.tabs button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;height:50px;color:var(--tx3);font-size:11px;font-weight:500}
 nav.tabs button.on{color:var(--ac);font-weight:600}
 nav .brand{display:none}
@@ -158,7 +158,7 @@ nav .brand{display:none}
 #sheet.open{pointer-events:auto}
 .sbg{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;transition:opacity .25s}
 #sheet.open .sbg{opacity:1}
-.sheet{position:absolute;left:0;right:0;bottom:0;max-height:90dvh;overflow:auto;background:var(--card);border-radius:28px 28px 0 0;padding:10px 20px calc(var(--sb) + 24px);transform:translateY(100%);transition:transform .34s cubic-bezier(.2,.9,.2,1);border-top:1px solid var(--line2)}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:94dvh;overflow:auto;background:var(--card);border-radius:28px 28px 0 0;padding:10px 20px calc(var(--sb) + 24px);transform:translateY(100%);transition:transform .34s cubic-bezier(.2,.9,.2,1);border-top:1px solid var(--line2)}
 #sheet.open .sheet{transform:none}
 .grab{width:40px;height:5px;border-radius:3px;background:var(--card3);margin:0 auto 14px}
 .sheet h2{margin:0;font-family:var(--serif);font-weight:400;font-size:30px;line-height:1.1}
@@ -246,7 +246,7 @@ input[type=date].in{-webkit-appearance:none;appearance:none;min-width:0;display:
 .ev{align-items:center}
 .calh{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center;font-size:11px;font-weight:700;color:var(--tx4);padding-bottom:6px}
 .calg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
-.cd{height:54px;border:0;border-top:1px solid var(--line);background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 0 0;color:var(--tx)}
+.cd{height:clamp(48px,calc((100dvh - var(--st) - var(--sb) - 420px) / 6),64px);border:0;border-top:1px solid var(--line);background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 0 0;color:var(--tx)}
 .cd .dn{width:32px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:500}
 .cd.out{opacity:.3}.cd.we .dn{color:var(--tx4)}.cd.free .dn,.cd.vac .dn{color:#5BD38A}
 .cd.today .dn{color:var(--ac);font-weight:700}.cd.sel .dn{background:var(--ac);color:var(--onac);font-weight:700}
@@ -254,15 +254,16 @@ input[type=date].in{-webkit-appearance:none;appearance:none;min-width:0;display:
 .cd .dots i.vb{width:14px;height:3px;border-radius:2px;background:rgba(91,211,138,.45)}
 .calswipe{touch-action:pan-y}
 .round.pri{background:var(--ac);color:var(--onac);border-color:transparent}
-.sw{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.srow{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
 .swbg{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:14px;font-weight:700}
 .swbg span{display:flex;align-items:center;gap:6px;opacity:0;transition:opacity .15s}.swbg .l{color:#5BD38A}.swbg .r{color:var(--warn)}
-.sw.gl .swbg{background:rgba(91,211,138,.14)}.sw.gl .swbg .l{opacity:1}.sw.gr .swbg{background:rgba(255,176,103,.14)}.sw.gr .swbg .r{opacity:1}
+.srow.gl .swbg{background:rgba(91,211,138,.14)}.srow.gl .swbg .l{opacity:1}.srow.gr .swbg{background:rgba(255,176,103,.14)}.srow.gr .swbg .r{opacity:1}
 .sfg{position:relative;display:flex;align-items:center;gap:10px;min-height:58px;padding:6px 0;background:var(--bg);touch-action:pan-y;cursor:pointer}
 .sfg.abst .nm{color:var(--warn)}
 .ini{width:26px;flex:none;font-size:12px;font-weight:700}
 .mini{font-size:11px;font-weight:700;margin-left:4px;white-space:nowrap}
-.sfg .rv{font-size:17px;min-width:42px;text-align:right}
+.sfg .rv{font-size:17px;width:52px;flex:none;text-align:right}
+.sfg .gchips{flex-wrap:nowrap;overflow:hidden}
 .sfg .pm{width:36px;height:36px;border-radius:11px;font-size:20px}
 .tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .tile{height:70px;border-radius:18px;border:1px solid var(--line2);background:var(--card2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:14px;font-weight:600;padding:0}
@@ -274,25 +275,30 @@ input[type=date].in{-webkit-appearance:none;appearance:none;min-width:0;display:
 .mcal{padding:10px 10px 8px;border-radius:18px;background:var(--card2)}
 .mch{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center;font-size:11px;font-weight:700;color:var(--tx4);padding-bottom:2px}
 .mcg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));row-gap:2px}
-.md{height:34px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;color:var(--tx)}
+.md{height:32px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;color:var(--tx)}
 .md span{width:32px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500}
 .md.out{opacity:.3}.md.we span{color:var(--tx4)}.md.free span{color:#5BD38A}.md.today span{color:var(--ac);font-weight:700}
 .md.rng{background:var(--acs)}.md.rs{background:linear-gradient(90deg,transparent 50%,var(--acs) 50%)}.md.re{background:linear-gradient(90deg,var(--acs) 50%,transparent 50%)}
 .md.sel span{background:var(--ac);color:var(--onac);font-weight:700}
-.dial{position:relative;width:188px;height:188px;flex:none;border-radius:94px;background:var(--card2)}
-.dh{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:15px;border:0;background:none;padding:0;font-size:14px;font-weight:500;color:var(--tx2)}
+.dial{position:relative;width:240px;height:240px;flex:none;border-radius:120px;background:var(--card2)}
+.dh{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:17px;border:0;background:none;padding:0;font-size:16px;font-weight:600;color:var(--tx2);z-index:2}
+.dh.in{width:30px;height:30px;margin:-15px 0 0 -15px;font-size:13px;color:var(--tx3)}
 .dh.on{background:var(--ac);color:var(--onac);font-weight:700}
-.hand{position:absolute;left:94px;top:93px;height:2px;background:var(--ac);transform-origin:0 50%;pointer-events:none}
-.hub{position:absolute;left:90px;top:90px;width:8px;height:8px;border-radius:4px;background:var(--ac)}
+.hand{position:absolute;left:120px;top:119px;height:2px;background:var(--ac);transform-origin:0 50%;pointer-events:none;z-index:1}
+.dctr{position:absolute;left:78px;top:98px;width:84px;height:44px;border-radius:14px;background:var(--card);display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:0 0 0 1px var(--line)}
+.dctr b{font-size:24px;font-weight:700}.dctr span{color:var(--ac)}
+.dline{font-size:15px;font-weight:600;white-space:nowrap;text-align:center}
+.mrow{display:flex;gap:6px;justify-content:center;flex-wrap:nowrap;width:100%}.mrow .chip{padding:0 10px;flex:none}
+.hub{display:none}
 .ttw{display:grid;grid-template-columns:30px repeat(5,minmax(0,1fr));gap:4px}
 .tdh{text-align:center;font-size:12px;font-weight:700;color:var(--tx3);padding-bottom:2px}.tdh.on{color:var(--ac)}
 .trh{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}.trh b{font-size:12px;color:var(--tx3)}.trh small{font-size:9px;color:var(--tx4)}
-.tc{height:46px;border-radius:11px;border:0;padding:0 6px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;line-height:1.15;min-width:0;overflow:hidden;text-align:left;color:var(--tx)}
+.tc{height:clamp(30px,calc((100dvh - var(--st) - var(--sb) - 300px) / var(--rows) - 4px),56px);border-radius:11px;border:0;padding:0 6px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;line-height:1.15;min-width:0;overflow:hidden;text-align:left;color:var(--tx)}
 .tc b{font-size:13px;font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tc small{font-size:10px;color:var(--tx3);white-space:nowrap}
 .tc.e{background:transparent;border:1px dashed var(--line)}.tc.e.td{background:rgba(255,255,255,.025)}
 .tc.now{box-shadow:0 0 0 2px var(--ac)}
-@media (min-width:900px){.tc{height:56px;padding:0 10px}.tc b{font-size:15px}}
-@media (max-width:360px){.dial{transform:scale(.9);transform-origin:left center}}
+@media (min-width:900px){.tc{height:clamp(40px,calc((100dvh - 260px) / var(--rows) - 4px),64px);padding:0 10px}.tc b{font-size:15px}}
+@media (max-width:360px){.dial{transform:scale(.88)}.mrow .chip{padding:0 7px}}
 /* Desktop */
 .only-wide{display:none}
 @media (min-width:900px){
@@ -605,9 +611,8 @@ function vCat(){
   const rows=st.map(s=>{const gs=gradesOf(s.id,'an'),a=absOf(s.id,'an',true),av=avg(gs);const ps=ptsOf(s.id,'an');return{s,gs,a,av,up:unused(ps,'+').length,um:unused(ps,'-').length,absT:a.some(x=>x.date===d)}});
   const avs=rows.map(r=>r.av).filter(x=>x!==null);const cav=avs.length?avs.reduce((x,y)=>x+y,0)/avs.length:null;
   const low=rows.filter(r=>r.av!==null&&r.av<5).length,totA=rows.reduce((x,r)=>x+r.a.length,0);
-  const list=st.length?`<div class="list">${rows.map(r=>`<div class="sw" data-sid="${r.s.id}"><div class="swbg"><span class="l">${ic('edit',18)} Notă</span><span class="r">Absent ${ic('x',18)}</span></div>
-     <div class="sfg ${r.absT?'abst':''}" data-a="student" data-id="${r.s.id}" role="button" tabindex="0"><div class="ini" style="color:${c.color}">${esc(initials(r.s.name))}</div>
-     <div class="grow" style="min-width:0"><div class="nm">${esc(r.s.name)}</div><div class="gchips" style="margin-top:4px;align-items:center">${r.gs.length?r.gs.slice(-6).map(g=>`<span class="g ${g.value<5?'low':''}">${g.value}</span>`).join(''):'<span class="sub" style="margin:0">fără note</span>'}
+  const list=st.length?`<div class="list">${rows.map(r=>`<div class="srow" data-sid="${r.s.id}"><div class="swbg"><span class="l">${ic('edit',18)} Notă</span><span class="r">Absent ${ic('x',18)}</span></div>
+     <div class="sfg ${r.absT?'abst':''}" data-a="student" data-id="${r.s.id}" role="button" tabindex="0"><div class="grow" style="min-width:0"><div class="nm">${esc(r.s.name)}</div><div class="gchips" style="margin-top:4px;align-items:center">${r.gs.length?r.gs.slice(-6).map(g=>`<span class="g ${g.value<5?'low':''}">${g.value}</span>`).join(''):'<span class="sub" style="margin:0">fără note</span>'}
      ${r.a.length?`<span class="mini" style="color:${r.absT?'var(--warn)':'var(--tx3)'}">${r.absT?'absent azi · ':''}${r.a.length} abs</span>`:''}${r.up?`<span class="mini" style="color:#5BD38A">+${r.up}</span>`:''}${r.um?`<span class="mini" style="color:var(--warn)">−${r.um}</span>`:''}</div></div>
      <div class="rv tnum" style="color:${r.av===null?'var(--tx4)':r.av<5?'var(--warn)':'var(--tx)'}">${r.av!==null?n2(r.av):'—'}</div>
      <button class="pm minus" data-a="pt" data-id="${r.s.id}" data-k="-" aria-label="Minus pentru ${esc(r.s.name)}">−</button><button class="pm plus" data-a="pt" data-id="${r.s.id}" data-k="+" aria-label="Plus pentru ${esc(r.s.name)}">+</button></div></div>`).join('')}</div>`
@@ -640,7 +645,7 @@ function vOrar(){
   const sw=hc&&hc.tt?`<div class="seg" style="margin-top:12px"><button class="${mode==='me'?'on':''}" data-a="ttMode" data-v="me">Orarul meu</button><button class="${mode==='cls'?'on':''}" data-a="ttMode" data-v="cls">Clasa ${esc(hc.name)}</button></div>`:'';
   const cnt=mode==='me'?sl.length:Object.values(hc.tt.days).reduce((x,r)=>x+r.filter(Boolean).length,0);
   return hdr(`Săpt. ${W.cur} / ${W.total} · ${cnt} ore`,'Orar',`<button class="round" data-a="bells" aria-label="Ore și pauze">${ic('bell',20)}</button>`)+sw+
-   `<div class="ttw" style="margin-top:12px">${g}</div>${mode==='cls'?`<details style="margin-top:12px"><summary class="muted" style="font-size:13px">Legendă</summary><div style="font-size:13px;color:var(--tx2);line-height:1.7;margin-top:6px">${Object.entries(hc.tt.legend||{}).map(([k,v])=>`<b>${esc(k)}</b> ${esc(v)}`).join(' · ')}<br>${Object.entries(hc.tt.teachers||{}).filter(([k,v])=>v).map(([k,v])=>`<b>${esc(k)}</b> ${esc(v)}`).join(' · ')}</div></details>`:'<div class="dim" style="font-size:12px;margin-top:10px">Atinge o oră pentru a o modifica.</div>'}`;
+   `<div class="ttw" style="margin-top:12px;--rows:${maxH}">${g}</div>${mode==='cls'?`<details style="margin-top:12px"><summary class="muted" style="font-size:13px">Legendă</summary><div style="font-size:13px;color:var(--tx2);line-height:1.7;margin-top:6px">${Object.entries(hc.tt.legend||{}).map(([k,v])=>`<b>${esc(k)}</b> ${esc(v)}`).join(' · ')}<br>${Object.entries(hc.tt.teachers||{}).filter(([k,v])=>v).map(([k,v])=>`<b>${esc(k)}</b> ${esc(v)}`).join(' · ')}</div></details>`:'<div class="dim" style="font-size:12px;margin-top:10px">Atinge o oră pentru a o modifica.</div>'}`;
 }
 
 /* ---------- MAI MULT ---------- */
@@ -662,7 +667,7 @@ function vSet(){
    ${sec('Sincronizare',li('sync','#4CC9F0','GitHub',syncSub,'syncEdit')+(SY.token?`<button class="li" data-a="syncNow"><div class="ico" style="background:var(--card3);color:var(--ac)">${ic('sync',18)}</div><div class="grow nm" style="color:var(--ac)">Sincronizează acum</div></button>`:''))}
    ${sec('Date',li('dl','#8B9CFF','Exportă copie de siguranță','Fișier .json cu toate datele','export')+li('ul','#B388FF','Importă copie de siguranță','Înlocuiește datele de pe acest dispozitiv','import')+li('spark','#FF7AB6','Încarcă date de exemplu','Pentru a vedea aplicația completată','demo')+
      `<button class="li" data-a="wipe"><div class="ico" style="background:rgba(255,107,107,.18);color:#FF6B6B">${ic('trash',18)}</div><div class="grow nm" style="color:#FF6B6B">Șterge toate datele</div></button>`)}
-   <p class="dim" style="font-size:12px;text-align:center;margin:8px 0">Catedra 2.0 · © Paul Chirilă</p>
+   <p class="dim" style="font-size:12px;text-align:center;margin:8px 0">Catedra 2.1 · © Paul Chirilă</p>
    </div></div><input type="file" id="impf" accept="application/json,.json" hidden>`;
 }
 /* ---------- DIRIGENȚIE · adeverințe și cereri ---------- */
@@ -877,10 +882,6 @@ function shStudentFull(id){
   return sheetHead(`${esc(c?.name||'')} · ${esc(c?.subject||'')}`,esc(s.name))+
   `<div class="stack"><div class="row" style="gap:10px"><div class="stat grow"><b class="tnum" style="color:var(--ac)">${av!==null?n2(av):'—'}</b><small>media · ${per==='an'?'tot anul':esc(byId('periods',per)?.name||'')}</small></div><div class="stat grow"><b class="tnum">${ab.length}<span> / ${ab.filter(a=>!a.motivated).length} nem.</span></b><small>absențe în an</small></div></div>
    ${pAct}
-   <div class="lbl" style="margin-top:6px">Notă nouă · atinge nota pentru a o salva</div>
-   <div class="ck">${KINDS.map(k=>`<label><input type="radio" name="gk" value="${k}" data-c="gk" ${ui.gk===k?'checked':''}><span>${k}</span></label>`).join('')}</div>
-   <div class="fld"><label for="gd">Data</label><input id="gd" type="date" class="in" data-c="gd" value="${gd}"></div>
-   <div class="keys">${[1,2,3,4,5,6,7,8,9,10].map(v=>`<button class="key tnum ${v<5?'low':''}" data-a="addGrade" data-id="${s.id}" data-v="${v}">${v}</button>`).join('')}</div>
    <div class="sec">Note (${gs.length})</div>
    ${gs.length?`<div class="list">${gs.map(g=>`<div class="li" style="min-height:48px"><span class="g ${g.value<5?'low':''}" style="height:30px;min-width:34px;font-size:16px">${g.value}</span><div class="grow"><div style="font-size:14px">${esc(g.kind||'')}</div><div class="sub">${fmtD(g.date,true)} · ${esc(modOf(g.date)?.name||'')}</div></div><button class="round" style="width:36px;height:36px" data-a="delGrade" data-id="${g.id}" aria-label="Șterge nota">${ic('trash',16)}</button></div>`).join('')}</div>`:'<p class="dim" style="font-size:14px;margin:0">Nicio notă încă.</p>'}
    <div class="row between"><div class="sec">Absențe (${ab.length})</div><button class="btn sm" data-a="addAbs" data-id="${s.id}">${ic('plus',16)} Absență (${fmtDs(gd)})</button></div>
@@ -947,22 +948,22 @@ function shEvent(){
   for(let i=0;i<42;i++){const x=addDays(st,i);if(i>=35&&i%7===0&&x.slice(0,7)!==e.m)break;const inM=x.slice(0,7)===e.m;
     const isS=x===e.start,isE=x===e.end,inr=multi&&x>e.start&&x<e.end;const info=dayInfo(x);
     cells+=`<button type="button" class="md ${inM?'':'out'} ${isS||isE?'sel':''} ${inr?'rng':''} ${multi&&isS?'rs':''} ${multi&&isE?'re':''} ${x===d0?'today':''} ${info.kind==='free'||info.kind==='vacation'?'free':''} ${info.kind==='weekend'?'we':''}" data-a="evDay" data-d="${x}"><span>${parse(x).getDate()}</span></button>`}
-  const H=[8,9,10,11,12,13,14,15,16,17,18,19,20];const R=74,C=94;const hi=H.indexOf(e.h);
-  const dial=`<div class="dial">${H.map((h,i)=>{const a=(-90+i*360/H.length)*Math.PI/180;return `<button type="button" class="dh ${h===e.h?'on':''}" data-a="evHour" data-h="${h}" style="left:${(C+R*Math.cos(a)).toFixed(0)}px;top:${(C+R*Math.sin(a)).toFixed(0)}px">${h}</button>`}).join('')}
-    ${hi>=0?`<div class="hand" style="width:${R-16}px;transform:rotate(${-90+hi*360/H.length}deg)"></div>`:''}<div class="hub"></div></div>`;
+  const H=[8,9,10,11,12,13,14,15,16,17,18,19,20];const C=120,RO=98,RI=66;
+  const pos=h=>{const ang=((h%12)*30-90)*Math.PI/180;const r=h===20?RI:RO;return[C+r*Math.cos(ang),C+r*Math.sin(ang),r,(h%12)*30-90]};
+  const sp=pos(e.h);
+  const dial=`<div class="dial">${H.map(h=>{const[x,y]=pos(h);return `<button type="button" class="dh ${h===e.h?'on':''} ${h===20?'in':''}" data-a="evHour" data-h="${h}" style="left:${x.toFixed(0)}px;top:${y.toFixed(0)}px">${h}</button>`}).join('')}
+    <div class="hand" style="width:${sp[2]-17}px;transform:rotate(${sp[3]}deg)"></div><div class="dctr"><b class="tnum">${pad(e.h)}<span>:</span>${pad(e.min)}</b></div></div>`;
   const nd=multi?schoolDays(e.start,e.end):0;
+  const mins=`<div class="mrow">${[0,15,30,45].map(mm=>`<button type="button" class="chip sm ${!e.allDay&&e.min===mm?'on':''}" data-a="evMin" data-m="${mm}">:${pad(mm)}</button>`).join('')}<button type="button" class="chip sm ${e.allDay?'on':''}" data-a="evAll">Toată ziua</button></div>`;
   const timeBox=multi?`<div class="card" style="padding:12px 14px;background:var(--card2)"><div style="font-size:15px;font-weight:600">${fmtR(e.start,e.end)}</div><div class="sub">Interval de ${diffDays(e.start,e.end)+1} zile${nd?` · ${plural(nd,'zi de curs','zile de curs')}`:''} · toată ziua</div></div>`
-   :`<div class="row" style="gap:12px;align-items:center">${e.allDay?'':dial}<div class="grow stack" style="gap:8px"><div class="eyebrow">${ZILE[dow(e.start)]}, ${fmtD(e.start)}</div>
-     ${e.allDay?'<div style="font-size:24px;font-weight:600">Toată ziua</div>':`<div class="tnum" style="font-size:36px;font-weight:600;line-height:1">${pad(e.h)}<span style="color:var(--ac)">:</span>${pad(e.min)}</div>
-     <div class="two" style="gap:6px">${[0,15,30,45].map(mm=>`<button type="button" class="chip sm ${e.min===mm?'on':''}" data-a="evMin" data-m="${mm}" style="justify-content:center">:${pad(mm)}</button>`).join('')}</div>`}
-     <button type="button" class="chip sm ${e.allDay?'on':''}" data-a="evAll" style="justify-content:center">Toată ziua</button></div></div>`;
+   :`<div class="stack" style="gap:10px;align-items:center"><div class="dline">${ZILE[dow(e.start)]}, ${fmtD(e.start)}${e.allDay?' · toată ziua':''}</div>${e.allDay?'':dial}${mins}</div>`;
   const cs=live('classes').sort((a,b)=>a.name.localeCompare(b.name,'ro',{numeric:true}));const cn=[...new Set(cs.map(c=>c.name))];
   const ex=ui.evx||'';
   return `<form data-f="event" class="stack" style="gap:12px"><div class="row between"><button type="button" class="lnk" data-a="close">Anulează</button><b style="font-size:16px">${isEdit?'Activitate':'Activitate nouă'}</b><button type="submit" class="lnk" style="color:var(--ac);font-weight:700">${isEdit?'Salvează':'Adaugă'}</button></div>
    <input id="evt" class="in" value="${esc(e.title||'')}" placeholder="Ce este? (ședință, practică, simulare…)" aria-label="Ce este" required>
    <div class="mcal"><div class="row between" style="padding:0 4px 6px"><b style="font-size:15px">${LUNI[m-1][0].toUpperCase()+LUNI[m-1].slice(1)} ${y}</b><div class="row" style="gap:4px"><button type="button" class="lnk" data-a="evMonth" data-n="-1" aria-label="Luna anterioară" style="color:var(--ac)">${ic('cl',20)}</button><button type="button" class="lnk" data-a="evMonth" data-n="1" aria-label="Luna următoare" style="color:var(--ac)">${ic('cr',20)}</button></div></div>
     <div class="mch">${[1,2,3,4,5,6,7].map(i=>`<div>${ZS[i]}</div>`).join('')}</div><div class="mcg">${cells}</div>
-    <div class="dim" style="font-size:11px;text-align:center;margin-top:4px">Atinge o zi · pentru un interval (ex. practică), atinge apoi ultima zi</div></div>
+    <div class="dim" style="font-size:11px;text-align:center;margin-top:4px">Pentru un interval: prima zi, apoi ultima</div></div>
    ${timeBox}
    <div class="row" style="gap:6px;flex-wrap:wrap"><button type="button" class="chip sm ${ex==='cls'||(e.classIds||[]).length?'on':''}" data-a="evX" data-v="cls">+ Clase${(e.classIds||[]).length?' · '+(e.classIds||[]).map(id=>byId('classes',id)?.name).filter(Boolean).filter((v,i,a)=>a.indexOf(v)===i).join(', '):''}</button><button type="button" class="chip sm ${ex==='note'||e.note?'on':''}" data-a="evX" data-v="note">+ Notiță</button><button type="button" class="chip sm ${e.ical?'on':''}" data-a="evIcal">${ic('bell',14)} Și în Calendarul iPhone</button></div>
    ${ex==='cls'?`<div class="row" style="gap:6px;flex-wrap:wrap">${cn.map(n=>{const ids=cs.filter(c=>c.name===n).map(c=>c.id);const on=ids.some(id=>(e.classIds||[]).includes(id));return `<button type="button" class="chip sm ${on?'on':''}" data-a="evCls" data-n="${esc(n)}">${esc(n)}</button>`}).join('')}</div>`:''}
