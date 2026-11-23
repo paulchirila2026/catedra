@@ -569,8 +569,8 @@ function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;con
 const meBadge=()=>S.settings.avatar!=null&&AVATARS[S.settings.avatar]?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='3.1';
-const NEWS=['Nemotivatele pe primul loc','Absențe cu adeverință și cu cerere (maximum 40) la fiecare elev','Ceas cu toate orele, și seara','Note mai mari, clasele pe tot rândul'];
+const APP_VER='3.2';
+const NEWS=['Foile se închid trăgând în jos','Toate orele din ceas funcționează','Butonul + Ședință repornit','Nemotivatele pe primul loc','Absențe cu adeverință și cu cerere (maximum 40) la fiecare elev','Ceas cu toate orele, și seara','Note mai mari, clasele pe tot rândul'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
 
@@ -1194,7 +1194,7 @@ const A={
   docDel:d=>{if(!confirm('Ștergi documentul și pozele lui?'))return;const x=byId('docs',d.id);removeFiles(x.files);del('docs',x.id);closeSheet()},
   viewFile:(d,el)=>{const src=DOC&&sheetFn?DOC.files:null;const id=d.fid||d.f;let f=(src||[]).find(x=>x.id===id);if(!f)for(const x of live('docs')){f=(x.files||[]).find(y=>y.id===id);if(f)break}if(f)viewFile(f)},
   viewClose:()=>{$('#viewer').classList.remove('open');$('#viewer').innerHTML=''},
-  sedinta:()=>{const hc=homeroom();EV={type:'sedinta',title:'Ședința cu părinții',start:today(),classIds:hc?[hc.id]:[]};openSheet(shEvent)},
+  sedinta:()=>{const hc=homeroom();const st=today();EV={id:uid(),title:'Ședința cu părinții',type:'sedinta',start:st,end:st,classIds:hc?[hc.id]:[],note:'',m:st.slice(0,7),h:17,min:0,allDay:false,ical:false};ui.evx='';openSheet(shEvent)},
   addAbs:d=>{const s=byId('students',d.id);upsert('absences',{id:uid(),studentId:s.id,classId:s.classId,date:ui.gd||today(),hour:null,motivated:false,done:false});refresh()},
   motiv:d=>{const a=byId('absences',d.id);a.motivated=!a.motivated;upsert('absences',a);refresh()},
   delAbs:d=>{del('absences',d.id);refresh()},
@@ -1220,7 +1220,7 @@ const A={
   calMove:d=>{const[y,m]=ui.cal.split('-').map(Number);const x=new Date(y,m-1+ +d.n,1);ui.cal=iso(x).slice(0,7);render(false)},
   calF:d=>{ui.calF=d.f;render(false)},
   event:d=>{const e=byId('events',d.id);const[h,mm]=(e.time||'08:00').split(':').map(Number);EV={...e,m:e.start.slice(0,7),h,min:mm,allDay:!e.time,ical:false};ui.evx='';openSheet(shEvent)},
-  eventEdit:d=>{const st=d.date||today();EV={id:uid(),title:'',type:'eveniment',start:st,end:st,classIds:[],note:'',m:st.slice(0,7),h:Math.min(20,Math.max(8,NOW().getHours()+1)),min:0,allDay:false,ical:false};ui.evx='';openSheet(shEvent)},
+  eventEdit:d=>{const st=d.date||today();EV={id:uid(),title:'',type:'eveniment',start:st,end:st,classIds:[],note:'',m:st.slice(0,7),h:Math.min(23,Math.max(8,NOW().getHours()+1)),min:0,allDay:false,ical:false};ui.evx='';openSheet(shEvent)},
   evDay:d=>{const e=EV;if(e._tap&&!e._picked&&e.start===e.end&&d.d>e.start){e.end=d.d;e._picked=true}else{e.start=e.end=d.d;e._picked=false;e._tap=true}rerenderSheet()},
   evMonth:d=>{const[y,m]=EV.m.split('-').map(Number);EV.m=iso(new Date(y,m-1+ +d.n,1)).slice(0,7);rerenderSheet()},
   evHour:d=>{EV.h=+d.h;EV.allDay=false;rerenderSheet()},evMin:d=>{EV.min=+d.m;rerenderSheet()},evAll:()=>{EV.allDay=!EV.allDay;rerenderSheet()},
@@ -1263,14 +1263,20 @@ function toggleAbsToday(sid){const st=byId('students',sid);const d=today();const
   if(ex){del('absences',ex.id);toast('Absența de azi a fost ștearsă')}else{upsert('absences',{id:uid(),studentId:sid,classId:st.classId,date:d,hour:null,motivated:false,done:false});toast(`${st.name} · absent azi`)}}
 let DIAL=null;
 function dialPick(e){const d=DIAL.el;const r=d.getBoundingClientRect();const k=r.width/240;const x=(e.clientX-r.left)/k-120,y=(e.clientY-r.top)/k-120;
-  let ang=Math.atan2(y,x)*180/Math.PI+90;if(ang<0)ang+=360;const rad=Math.hypot(x,y);let i=Math.round(ang/30)%12;let h=i===0?12:i<=7?12+i:i===8?(rad<82?20:8):i;
-  const hand=d.querySelector('.hand');if(hand){hand.style.transform=`rotate(${ang-90}deg)`;hand.style.width=((h===20?66:98)-17)+'px'}
+  let ang=Math.atan2(y,x)*180/Math.PI+90;if(ang<0)ang+=360;const rad=Math.hypot(x,y);let i=Math.round(ang/30)%12;const inn=rad<81;let h=inn?(i>=8?12+i:i):(i>=8?i:12+i);
+  const hand=d.querySelector('.hand');if(hand){hand.style.transform=`rotate(${ang-90}deg)`;hand.style.width=((inn?64:98)-17)+'px'}
   if(h!==DIAL.h){DIAL.h=h;d.querySelectorAll('.dh').forEach(b=>b.classList.toggle('on',+b.dataset.h===h));const c=d.querySelector('.dctr b');if(c)c.innerHTML=`${pad(h)}<span>:</span>${pad(EV.min)}`;try{navigator.vibrate&&navigator.vibrate(6)}catch(_){}}}
 document.addEventListener('pointerdown',e=>{const d=e.target.closest('.dial');if(!d||!EV)return;DIAL={el:d,h:EV.h};d.classList.add('drag');try{d.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault();dialPick(e)});
 document.addEventListener('pointermove',e=>{if(DIAL){e.preventDefault();dialPick(e)}});
 document.addEventListener('pointerup',()=>{if(!DIAL)return;const h=DIAL.h;DIAL.el.classList.remove('drag');DIAL=null;EV.h=h;EV.allDay=false;swallow=Date.now();rerenderSheet()});
 document.addEventListener('pointercancel',()=>{if(DIAL){DIAL.el.classList.remove('drag');DIAL=null;rerenderSheet()}});
-let SW=null,swallow=0;
+let SW=null,swallow=0,SD=null;
+document.addEventListener('touchstart',e=>{const sh=e.target.closest('#sheet.open .sheet');if(!sh)return;const g=sh.querySelector('.grab');if(g&&getComputedStyle(g).display==='none')return;
+  if(e.target.closest('.dial,textarea,select,.sfg,.calswipe,.ttswipe,.thumbs'))return;if(sh.scrollTop>2&&!e.target.closest('.grab'))return;const t=e.touches[0];SD={sh,x:t.clientX,y:t.clientY,dy:0,lock:null,st:sh.scrollTop}},{passive:true});
+document.addEventListener('touchmove',e=>{if(!SD)return;const t=e.touches[0];const dx=t.clientX-SD.x,dy=t.clientY-SD.y;
+  if(SD.lock==null&&(Math.abs(dx)>8||Math.abs(dy)>8))SD.lock=(dy>0&&Math.abs(dy)>Math.abs(dx)*1.2&&SD.sh.scrollTop<=2)?'y':'n';
+  if(SD.lock==='y'){if(e.cancelable)e.preventDefault();SD.dy=Math.max(0,dy);SD.sh.style.transition='none';SD.sh.style.transform=`translateY(${SD.dy}px)`}},{passive:false});
+document.addEventListener('touchend',()=>{if(!SD)return;const d=SD;SD=null;if(d.lock!=='y')return;swallow=Date.now();d.sh.style.transition='';d.sh.style.transform='';if(d.dy>110)closeSheet()});
 document.addEventListener('touchstart',e=>{const t=e.touches[0];if(e.target.closest('.pm,label'))return;const r=e.target.closest('.sfg');const c=e.target.closest('.calswipe')||e.target.closest('.ttswipe');if(!r&&!c)return;SW={r,c,x:t.clientX,y:t.clientY,dx:0,lock:null}},{passive:true});
 document.addEventListener('touchmove',e=>{if(!SW)return;const t=e.touches[0];const dx=t.clientX-SW.x,dy=t.clientY-SW.y;
   if(SW.lock==null&&(Math.abs(dx)>8||Math.abs(dy)>8))SW.lock=Math.abs(dx)>Math.abs(dy)*1.2?'x':'y';

@@ -1,6 +1,6 @@
 // Pornire din copia de pe telefon (merge și fără internet sau pe Wi-Fi cu pagină de logare);
 // actualizarea se descarcă în fundal și se păstrează doar dacă e chiar aplicația.
-const CACHE = 'catedra-v16';
+const CACHE = 'catedra-v17';
 const MARK = 'apple-mobile-web-app-title" content="Catedra"';
 const ASSETS = ['./','./index.html','./manifest.webmanifest','./icons/icon-180.png','./icons/icon-192.png','./icons/icon-512.png','./vendor/xlsx.full.min.js'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).catch(() => {})); self.skipWaiting(); });
