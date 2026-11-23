@@ -252,7 +252,7 @@ input[type=date].in,input[type=time].in{-webkit-appearance:none;appearance:none;
 .ev{align-items:center}
 .calh{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center;font-size:11px;font-weight:700;color:var(--tx4);padding-bottom:6px}
 .calg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
-.cd{height:clamp(48px,calc((100% - var(--st) - var(--sb) - 420px) / 6),64px);border:0;border-top:1px solid var(--line);background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 0 0;color:var(--tx)}
+.cd{height:clamp(48px,calc((var(--fullh,100vh) - var(--st) - var(--sb) - 420px) / 6),64px);border:0;border-top:1px solid var(--line);background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 0 0;color:var(--tx)}
 .cd .dn{width:32px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:500}
 .cd.out{opacity:.3}.cd.we .dn{color:var(--tx4)}.cd.free .dn,.cd.vac .dn{color:#5BD38A}
 .cd.today .dn{color:var(--ac);font-weight:700}.cd.sel .dn{background:var(--ac);color:var(--onac);font-weight:700}
@@ -299,11 +299,11 @@ input[type=date].in,input[type=time].in{-webkit-appearance:none;appearance:none;
 .ttw{display:grid;grid-template-columns:30px repeat(5,minmax(0,1fr));gap:4px}
 .tdh{text-align:center;font-size:12px;font-weight:700;color:var(--tx3);padding-bottom:2px}.tdh.on{color:var(--ac)}
 .trh{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}.trh b{font-size:12px;color:var(--tx3)}.trh small{font-size:9px;color:var(--tx4)}
-.tc{height:clamp(30px,calc((100% - var(--st) - var(--sb) - 282px) / var(--rows) - 4px),74px);border-radius:11px;border:0;padding:0 6px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;line-height:1.15;min-width:0;overflow:hidden;text-align:left;color:var(--tx)}
+.tc{height:clamp(30px,calc((var(--fullh,100vh) - var(--st) - var(--sb) - 282px) / var(--rows) - 4px),74px);border-radius:11px;border:0;padding:0 6px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;line-height:1.15;min-width:0;overflow:hidden;text-align:left;color:var(--tx)}
 .tc b{font-size:13px;font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tc small{font-size:10px;color:var(--tx3);white-space:nowrap}
 .tc.e{background:transparent;border:1px dashed var(--line)}.tc.e.td{background:rgba(255,255,255,.025)}
 .tc.now{box-shadow:0 0 0 2px var(--ac)}
-@media (min-width:900px){.tc{height:clamp(40px,calc((100% - 260px) / var(--rows) - 4px),64px);padding:0 10px}.tc b{font-size:15px}}
+@media (min-width:900px){.tc{height:clamp(40px,calc((100vh - 260px) / var(--rows) - 4px),64px);padding:0 10px}.tc b{font-size:15px}}
 @media (max-width:360px){.dial{transform:scale(.88)}.mrow .chip{padding:0 7px}}
 .hb{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:13px}
 .hbl{width:118px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--tx2)}
@@ -568,8 +568,8 @@ function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;con
 const meBadge=()=>S.settings.avatar!=null&&AVATARS[S.settings.avatar]?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='2.8';
-const NEWS=['Așezarea în pagină la pornire, ca la Bifa'];
+const APP_VER='2.9';
+const NEWS=['Orarul și calendarul folosesc din nou tot ecranul'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
 
