@@ -569,7 +569,7 @@ function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;con
 const meBadge=()=>S.settings.avatar!=null&&AVATARS[S.settings.avatar]?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='3.3';
+const APP_VER='3.4';
 const NEWS=['Foile se închid trăgând în jos','Toate orele din ceas funcționează','Butonul + Ședință repornit','Nemotivatele pe primul loc','Absențe cu adeverință și cu cerere (maximum 40) la fiecare elev','Ceas cu toate orele, și seara','Note mai mari, clasele pe tot rândul'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
@@ -592,9 +592,15 @@ function migrate(){let ch=false;const t=Date.now();
 function schoolDaysUntil(d,target){let n=0;for(let x=addDays(d,1);x<target&&n<400;x=addDays(x,1))if(dayInfo(x).kind==='school')n++;return n}
 const subjOf=l=>l.subject||cShort(l.cls)||l.cls?.subject||'Oră';
 function ring(pct,big,small,col='var(--ac)'){const C=2*Math.PI*25;return `<div class="ring"><svg width="58" height="58" viewBox="0 0 58 58" aria-hidden="true"><circle cx="29" cy="29" r="25" fill="none" stroke="var(--card3)" stroke-width="5"/><circle cx="29" cy="29" r="25" fill="none" stroke="${col}" stroke-width="5" stroke-linecap="round" transform="rotate(-90 29 29)" style="stroke-dasharray:${(C*Math.max(0,Math.min(1,pct))).toFixed(1)} ${C.toFixed(1)}"/></svg><div><b>${big}</b><small>${small}</small></div></div>`}
+function relDays(d,e){const dd=diffDays(d,e.start);if(dd<0)return inR(d,e)?'în curs':'';if(dd===0)return 'azi';if(dd===1)return 'mâine';if(dd<14)return `peste ${dd} zile`;const w=Math.round(dd/7);return dd<60?`peste ${w} săptămâni`:`peste ${Math.round(dd/30)} luni`}
+function perRow(p,d){const vac=p.kind==='vacation',mod=p.kind==='module';const col=mod?'var(--ac)':'#5BD38A';const ds=mod?p.start:p.start;const dt=parse(ds);const rel=relDays(d,p);
+  const t=mod?'Începe '+p.name:p.name;const when=p.end&&p.end!==p.start?fmtDs(p.start)+' – '+fmtDs(p.end):'o zi';
+  return `<button class="ev" data-a="perEdit" data-id="${p.id}"><div class="dblk"><span style="color:${col}">${['','LUN','MAR','MIE','JOI','VIN','SÂM','DUM'][dow(ds)]}</span><b class="tnum">${dt.getDate()}</b></div>
+   <div class="grow"><div class="nm">${esc(t)}</div><div class="sub"><span style="color:${col}">${mod?'modul':vac?'vacanță':'zi liberă'}</span> · ${mod?'până la '+fmtDs(p.end):when}${rel?` · <span style="color:var(--ac)">${rel}</span>`:''}</div></div></button>`;
+}
 function evRow(e,d){
   const t=TYPES[e.type]||TYPES.eveniment;const col=e.type&&e.type!=='eveniment'?t.c:'var(--ac)';const dt=parse(e.start);
-  const dd=diffDays(d,e.start);const rel=dd===0?'azi':dd===1?'mâine':dd>1&&dd<8?`în ${dd} zile`:inR(d,e)&&dd<0?'în curs':'';
+  const dd=diffDays(d,e.start);const rel=relDays(d,e);
   const cls=(e.classIds||[]).map(id=>byId('classes',id)).filter(Boolean).map(c=>esc(c.name)).join(', ');
   const when=e.end&&e.end!==e.start?fmtR(e.start,e.end):(e.time||'toată ziua');
   return `<button class="ev" data-a="event" data-id="${e.id}"><div class="dblk"><span style="color:${col}">${['','LUN','MAR','MIE','JOI','VIN','SÂM','DUM'][dow(e.start)]}</span><b class="tnum">${dt.getDate()}</b></div>
@@ -647,9 +653,10 @@ function vAzi(){
   if(L.length)sched=`<div><div class="sec">Programul de azi</div><div class="list sched">`+L.map(l=>{const st=now>=l.b.e?'done':now>=l.b.s?'now':'';const c=l.cls;
     return `<button class="li ${st}" data-a="slot" data-d="${l.day}" data-h="${l.hour}"><div class="t tnum">${fmtT(l.b.s)}</div><div class="cb" style="background:${c?c.color:'var(--tx4)'}"></div>
      <div class="grow nm" style="font-weight:600">${esc(subjOf(l))} <span class="muted" style="font-weight:400">${c&&!l.subject?esc(c.subject.replace(/^M\d+\s*·\s*/,'')):''}</span></div>${c?`<span class="pill">${esc(c.name)}</span>`:''}${st==='done'?`<span class="dim">${ic('check',16,2.6)}</span>`:''}</button>`}).join('')+`</div></div>`;
-  const up=live('events').filter(e=>(e.end||e.start)>=d&&e.start<=addDays(d,60)).sort((a,b)=>(a.start+(a.time||''))<(b.start+(b.time||''))?-1:1).slice(0,5);
+  const lim=addDays(d,120);const up=[...live('events').filter(e=>(e.end||e.start)>=d&&e.start<=lim).map(e=>({k:e.start+(e.time||''),h:evRow(e,d)})),
+    ...periods().filter(p=>p.kind!=='module'?(p.end||p.start)>=d:p.start>d).filter(p=>p.start<=lim).map(p=>({k:p.start+(p.kind==='module'?' 1':' 0'),h:perRow(p,d)}))].sort((a,b)=>a.k<b.k?-1:1).slice(0,5);
   const evs=`<div><div class="row between"><div class="sec">Urmează</div><button class="btn sm" data-a="eventEdit" data-date="${d}" style="height:32px;color:var(--ac)">${ic('plus',16)} Activitate</button></div>
-   ${up.length?`<div class="list">${up.map(e=>evRow(e,d)).join('')}</div>`:`<p class="muted" style="font-size:14px;margin:8px 0">Nimic programat în perioada următoare.</p>`}</div>`;
+   ${up.length?`<div class="list">${up.map(x=>x.h).join('')}</div>`:`<p class="muted" style="font-size:14px;margin:8px 0">Nimic programat în perioada următoare.</p>`}</div>`;
   const pg=pendG().length,pa=pendA().length;const pend=pg+pa?`<button class="card row pendc" data-a="pendOpen" style="text-align:left;width:100%;padding:12px 14px;gap:12px"><div style="width:34px;height:34px;border-radius:11px;background:var(--acs);color:var(--ac);display:flex;align-items:center;justify-content:center">${ic('edit',18)}</div><div class="grow"><div style="font-size:15px;font-weight:600">De trecut în catalog</div><div class="sub">${[pg?plural(pg,'notă','note'):'',pa?plural(pa,'absență','absențe'):''].filter(Boolean).join(' · ')}</div></div><span class="dim">${ic('cr',18)}</span></button>`:'';
   const pd=pendingDocs().length;const nudge=pend+(pd?`<button class="card row" data-a="tab" data-t="dir" style="text-align:left;width:100%;padding:12px 14px;gap:12px"><div style="width:34px;height:34px;border-radius:11px;background:rgba(255,176,103,.15);color:var(--warn);display:flex;align-items:center;justify-content:center">${ic('doc',18)}</div><div class="grow"><div style="font-size:15px;font-weight:600">${plural(pd,'document','documente')} de motivat</div><div class="sub">Adeverințe și cereri netrecute în catalogul electronic</div></div><span class="dim">${ic('cr',18)}</span></button>`:'');
   let idle='';
