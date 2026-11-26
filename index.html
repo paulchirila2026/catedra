@@ -569,7 +569,7 @@ function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;con
 const meBadge=()=>S.settings.avatar!=null&&AVATARS[S.settings.avatar]?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='3.5';
+const APP_VER='3.6';
 const NEWS=['Foile se închid trăgând în jos','Toate orele din ceas funcționează','Butonul + Ședință repornit','Nemotivatele pe primul loc','Absențe cu adeverință și cu cerere (maximum 40) la fiecare elev','Ceas cu toate orele, și seara','Note mai mari, clasele pe tot rândul'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
@@ -583,7 +583,13 @@ const hexA=(h,a)=>{const n=parseInt(String(h||'#888888').slice(1),16);return `rg
 function applySchoolType(){const end=S.settings.schoolType==='theo'?'2027-06-18':'2027-06-25';const t=Date.now();
   const m5=S.periods.find(p=>p.id==='m5'),v4=S.periods.find(p=>p.id==='v4');
   if(m5&&m5.end!==end){m5.end=end;m5.updatedAt=t}if(v4&&v4.start!==addDays(end,1)){v4.start=addDays(end,1);v4.updatedAt=t}}
-function migrate(){let ch=false;const t=Date.now();
+function syncRoster(){let n=0;const by={};live('classes').forEach(c=>(by[c.name]=by[c.name]||[]).push(c));
+  for(const k in by){const cs=by[k];if(cs.length<2)continue;const src=cs.map(c=>studentsOf(c.id)).sort((a,b)=>b.length-a.length)[0];if(!src.length)continue;
+    for(const c of cs){if(studentsOf(c.id).length)continue;for(const st of src){const id=c.id+'_'+st.id;const ex=S.students.find(x=>x.id===id);if(ex&&ex.deleted)continue;upsert('students',{id,classId:c.id,name:st.name,photo:st.photo});n++}}}
+  return n}
+const siblings=s=>{const c=byId('classes',s.classId);return c?live('classes').filter(x=>x.name===c.name&&x.id!==c.id):[]};
+const twinOf=(s,c)=>live('students').find(z=>z.classId===c.id&&normName(z.name).join(' ')===normName(s.name).join(' '));
+function migrate(){let ch=false;const t=Date.now();if(syncRoster())ch=true;
   for(const c of live('classes'))if(c.short==null){c.short=guessShort(c.subject);if(c.name.includes(' · '))c.name=c.name.split(' · ')[0];c.updatedAt=t;ch=true}
   if(!S.settings.schoolType){S.settings.schoolType='tech';ch=true}
   const before=JSON.stringify(S.periods.filter(p=>p.id==='m5'||p.id==='v4'));applySchoolType();if(JSON.stringify(S.periods.filter(p=>p.id==='m5'||p.id==='v4'))!==before)ch=true;
@@ -1232,9 +1238,9 @@ const A={
   addAbs:d=>{const s=byId('students',d.id);upsert('absences',{id:uid(),studentId:s.id,classId:s.classId,date:ui.gd||today(),hour:null,motivated:false,done:false});refresh()},
   motiv:d=>{const a=byId('absences',d.id);a.motivated=!a.motivated;upsert('absences',a);refresh()},
   delAbs:d=>{del('absences',d.id);refresh()},
-  renStudent:d=>{const s=byId('students',d.id);const n=prompt('Numele elevului',s.name);if(n&&n.trim()){s.name=n.trim();upsert('students',s);refresh()}},
-  delStudent:d=>{const s=byId('students',d.id);if(!confirm(`Ștergi elevul ${s.name}, cu note și absențe?`))return;del('students',s.id);
-    live('grades').filter(g=>g.studentId===s.id).forEach(g=>del('grades',g.id));live('absences').filter(a=>a.studentId===s.id).forEach(a=>del('absences',a.id));
+  renStudent:d=>{const s=byId('students',d.id);const n=prompt('Numele elevului',s.name);if(n&&n.trim()){const tw=siblings(s).map(c=>twinOf(s,c)).filter(Boolean);[s,...tw].forEach(x=>{x.name=n.trim();upsert('students',x)});refresh()}},
+  delStudent:d=>{const s0=byId('students',d.id);const tw=siblings(s0).map(c=>twinOf(s0,c)).filter(Boolean);if(!confirm(`Ștergi elevul ${s0.name}, cu note și absențe${tw.length?', de la toate disciplinele clasei':''}?`))return;
+    for(const s of [s0,...tw]){del('students',s.id);live('grades').filter(g=>g.studentId===s.id).forEach(g=>del('grades',g.id));live('absences').filter(a=>a.studentId===s.id).forEach(a=>del('absences',a.id))}
     if(sheetFn&&sheetFn.toString().includes('shStudent'))closeSheet();else refresh()},
   attend:d=>{const date=today();const h=d.h?+d.h:null;const ex=live('absences').filter(a=>a.classId===d.c&&a.date===date&&!a.subject&&(a.hour||null)===h);
     ATT={cid:d.c,date,hour:h,abs:new Set(ex.map(a=>a.studentId)),ex};openSheet(shAttend)},
@@ -1346,7 +1352,8 @@ const FORMS={
     if(c.homeroom)live('classes').forEach(x=>{if(x.id!==c.id&&x.homeroom){x.homeroom=false;upsert('classes',x)}});
     const names=(fd.get('students')||'').split(/\r?\n/).map(x=>x.replace(/^\s*\d+[\.\)]\s*/,'').replace(/\t.*/,'').trim()).filter(Boolean);
     const ex=new Set(studentsOf(c.id).map(s=>s.name.toLowerCase()));let n=0;
-    for(const nm of names)if(!ex.has(nm.toLowerCase())){upsert('students',{id:uid(),classId:c.id,name:nm});ex.add(nm.toLowerCase());n++}
+    for(const nm of names)if(!ex.has(nm.toLowerCase())){upsert('students',{id:uid(),classId:c.id,name:nm});ex.add(nm.toLowerCase());n++;live('classes').filter(x=>x.name===c.name&&x.id!==c.id&&studentsOf(x.id).length).forEach(x=>{if(!studentsOf(x.id).some(z=>z.name.toLowerCase()===nm.toLowerCase()))upsert('students',{id:uid(),classId:x.id,name:nm})})}
+    n+=syncRoster();
     ui.cls=c.id;toast(n?`${plural(n,'elev adăugat','elevi adăugați')}`:'Clasă salvată');if(n||!id)closeSheet();else{closeSheet()}},
   slot:(fd)=>{const{d,h}=SLOT;const s=live('slots').find(x=>x.day===d&&x.hour===h)||{id:uid(),day:d,hour:h};
     Object.assign(s,{classId:fd.get('classId')||null,subject:fd.get('subject').trim(),room:fd.get('room').trim()});upsert('slots',s);closeSheet()},
