@@ -569,7 +569,7 @@ function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;con
 const meBadge=()=>S.settings.avatar!=null&&AVATARS[S.settings.avatar]?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='3.4';
+const APP_VER='3.5';
 const NEWS=['Foile se închid trăgând în jos','Toate orele din ceas funcționează','Butonul + Ședință repornit','Nemotivatele pe primul loc','Absențe cu adeverință și cu cerere (maximum 40) la fiecare elev','Ceas cu toate orele, și seara','Note mai mari, clasele pe tot rândul'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
@@ -867,7 +867,8 @@ function matchStudent(name,list){
   const c=list.filter(s=>{const st=normName(s.name);return st.length&&st.every(x=>t.includes(x))});return c.length===1?c[0]:null;
 }
 const ecatOf=sid=>S.ecat?.rows?.[sid]||null;
-let IMP=null;
+let IMP=null,IMPQ=[];
+function impNext(){if(IMPQ.length){const f=IMPQ.shift();IMP={step:1};setTimeout(()=>{openSheet(shImport);readImportFile(f)},350)}}
 function parseTable(text){
   const lines=text.replace(/\r/g,'').split('\n').filter(l=>l.trim());if(!lines.length)return[];
   const first=lines[0];const d=first.includes('\t')?'\t':(first.split(';').length>first.split(',').length?';':',');
@@ -906,14 +907,32 @@ function gradeImportPlan(){
     plan.push({studentId:s.id,classId:c.id,value:v,date:d,kind:'Catalog'})}
   return{plan,miss,dup,other,conf};
 }
+const isYes=v=>{const x=String(v??'').trim().toLowerCase();return /^(da|yes|true|1|x|motivat[aă]?)$/.test(x)};
+function absListPlan(){
+  const H=IMP.hdr.map(h=>String(h).toLowerCase());const ix=re=>H.findIndex(h=>re.test(h));
+  const iE=ix(/^elev/),iS=ix(/materie|disciplin/),iD=ix(/^data/),iC=ix(/^clasa$/),iM=ix(/motivat/),iW=ix(/cine a (pus|trecut|notat|introdus)|profesor/);
+  const me=normName(S.settings.name||'');const cls=live('classes');const plan=[],upd=[],conf=[];const miss={};let same=0,other=0,rows=0;
+  for(const r of IMP.rows){if(!r[iE]||!anyDate(r[iD]))continue;rows++;
+    if(iW>=0&&me.length&&r[iW]){const w=normName(r[iW]);if(!me.every(x=>w.includes(x))){other++;continue}}
+    const cn=className(r[iC]);const ns=normSub(r[iS]);
+    const c=cls.find(x=>x.name===cn&&(normSub(x.subject)===ns||normSub(x.subject).includes(ns)||ns.includes(normSub(x.subject))))||cls.find(x=>x.name===cn&&cShort(x)===guessShort(r[iS]));
+    if(!c){other++;continue}
+    const s=matchStudent(r[iE],studentsOf(c.id));if(!s){const k=`${cn}: ${String(r[iE]).trim()}`;miss[k]=(miss[k]||0)+1;continue}
+    const d=anyDate(r[iD]);const mot=isYes(r[iM]);
+    const ex=live('absences').find(a=>a.studentId===s.id&&a.date===d&&!plan.includes(a)&&!upd.includes(a)&&!conf.includes(a));
+    if(ex){if(ex.done===false)conf.push(ex);if(!!ex.motivated!==mot){ex._mot=mot;upd.push(ex)}else if(ex.done!==false)same++;continue}
+    plan.push({studentId:s.id,classId:c.id,date:d,hour:null,motivated:mot,done:true})}
+  return{plan,upd,conf,miss,same,other,rows};
+}
 function prepImport(rows){
   rows=rows.map(r=>r.map(x=>x==null?'':String(x).trim())).filter(r=>r.some(x=>x));
   if(rows.length<2){toast('Nu am găsit un tabel cu cel puțin un rând de date');return}
   let hi=rows.findIndex(r=>r.filter(x=>x&&isNaN(+x)).length>=2);if(hi<0)hi=0;
   const hdr=rows[hi].map((x,i)=>x||`Coloana ${i+1}`);const H=hdr.map(h=>String(h).toLowerCase());
   const isG=H.includes('nota')&&H.includes('clasa')&&H.some(h=>/^elev/.test(h));
-  IMP={hdr,rows:rows.slice(hi+1),map:guessMap(hdr),step:2,kind:isG?'grades':'abs'};
-  if(!isG){const m=IMP.map;IMP.auto=m.subj>=0&&m.nem>=0&&m.mot>=0;if(!homeroom()){toast('Alege mai întâi clasa de diriginție');IMP={step:1}}}
+  const isL=!isG&&H.some(h=>/^elev/.test(h))&&H.some(h=>/^data/.test(h))&&H.some(h=>/motivat/.test(h))&&!H.some(h=>/nemotiv|total/.test(h));
+  IMP={hdr,rows:rows.slice(hi+1),map:guessMap(hdr),step:2,kind:isG?'grades':isL?'abslist':'abs'};
+  if(!isG&&!isL){const m=IMP.map;IMP.auto=m.subj>=0&&m.nem>=0&&m.mot>=0;if(!homeroom()){toast('Alege mai întâi clasa de diriginție');IMP={step:1}}}
   if(sheetFn)rerenderSheet();else openSheet(shImport);
 }
 function computeImport(){
@@ -926,7 +945,8 @@ function computeImport(){
       const a=m.total>=0&&/\d{1,2}\.\d{1,2}/.test(String(r[m.total]))?String(r[m.total]).trim():'';
       (det[s.id]=det[s.id]||[]).push({s:sj,g:m.gr>=0?String(r[m.gr]||'').trim():'',a,m:m.mot>=0?num(r[m.mot]):0,n:m.nem>=0?num(r[m.nem]):0})}
     const o=res[s.id]||(res[s.id]={t:0,n:0,m:0});
-    if(counts){const t=m.total>=0?num(r[m.total]):0,n=m.nem>=0?num(r[m.nem]):0,mo=m.mot>=0?num(r[m.mot]):0;o.n+=n;o.m+=mo;o.t+=t||(n+mo)}
+    if(counts&&m.total<0&&m.nem<0&&!/\d/.test(String(r[m.mot]??''))){o.t++;if(isYes(r[m.mot]))o.m++;else o.n++}
+    else if(counts){const t=m.total>=0?num(r[m.total]):0,n=m.nem>=0?num(r[m.nem]):0,mo=m.mot>=0?num(r[m.mot]):0;o.n+=n;o.m+=mo;o.t+=t||(n+mo)}
     else{o.t++;const st=m.status>=0?String(r[m.status]).toLowerCase():'';if(st&&!/nemotiv|^n$|^nu$/.test(st)&&/motiv|^m$|^da$|^yes$|true|^x$/.test(st))o.m++;else o.n++}}
   for(const id in res){const o=res[id];if(!o.m&&o.t>o.n)o.m=o.t-o.n;if(!o.n&&o.t>o.m&&m.nem<0)o.n=o.t-o.m}
   return{res,un:[...un],counts,det,av,co};
@@ -934,8 +954,8 @@ function computeImport(){
 function shImport(){
   const hc=homeroom();
   if(!IMP||IMP.step===1)return sheetHead('Catalogul electronic','Importă absențele')+`<div class="stack">
-   <p class="muted" style="margin:0;font-size:14px;line-height:1.5">Se recunosc automat: <b>situația clasei</b> (absențe, medii, purtare) și <b>exportul de note</b> (se adaugă doar notele tale, fără dubluri). Pe PC poți trage fișierul direct pe pagină. Importul absențelor înlocuiește datele importate anterior, deci actualizarea se poate face oricând. Evidența rămâne orientativă: situația oficială e cea din catalogul electronic.</p>
-   <label class="btn pri" style="position:relative">${ic('ul',20)} Încarcă fișier Excel sau CSV<input type="file" accept=".xlsx,.xls,.csv,.txt,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" data-c="impFile" style="position:absolute;opacity:0;width:1px;height:1px"></label>
+   <p class="muted" style="margin:0;font-size:14px;line-height:1.5">Se recunosc automat: <b>situația școlară</b> a clasei de diriginție (absențe, medii, purtare), <b>exportul de note</b> și <b>lista de absențe</b> (se adaugă doar ce lipsește, fără dubluri). Se pot alege mai multe fișiere deodată. Pe PC poți trage fișierul direct pe pagină. Importul absențelor înlocuiește datele importate anterior, deci actualizarea se poate face oricând. Evidența rămâne orientativă: situația oficială e cea din catalogul electronic.</p>
+   <label class="btn pri" style="position:relative">${ic('ul',20)} Încarcă fișier Excel sau CSV<input type="file" accept=".xlsx,.xls,.csv,.txt,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" data-c="impFile" multiple style="position:absolute;opacity:0;width:1px;height:1px"></label>
    <div class="fld"><label for="impt">sau lipește tabelul copiat de pe site</label><textarea id="impt" class="in" style="min-height:140px;font-size:13px" placeholder="Nume elev    Total    Motivate    Nemotivate&#10;Popescu Andrei    12    8    4&#10;…"></textarea></div>
    <button class="btn" data-a="impPaste">Continuă cu textul lipit</button></div>`;
   if(IMP.kind==='grades'){const P=gradeImportPlan();const by={};P.plan.forEach(x=>{const c=byId('classes',x.classId);const k=c?cLab(c):'?';by[k]=(by[k]||0)+1});const mk=Object.entries(P.miss);
@@ -943,6 +963,13 @@ function shImport(){
      ${Object.entries(by).map(([k,n])=>`<div class="sub">${k}: ${n}</div>`).join('')}${P.dup?`<div class="sub">${P.dup} există deja · sărite</div>`:''}${P.other?`<div class="sub">${P.other} puse de alți profesori sau la purtare · sărite</div>`:''}
      ${mk.length?`<div class="sub" style="color:var(--warn)">Nepotrivite: ${mk.slice(0,6).map(([k,n])=>esc(k)+(n>1?' ('+n+')':'')).join(', ')}${mk.length>6?'…':''}</div>`:''}</div>
      <button class="btn pri" data-a="impGrades" ${P.plan.length||P.conf.length?'':'disabled'}>Importă${P.conf.length?' și confirmă':''}</button><button class="btn" data-a="impBack">Alt fișier</button></div>`}
+  if(IMP.kind==='abslist'){const P=absListPlan();const by={};P.plan.forEach(x=>{const c=byId('classes',x.classId);const k=c?cLab(c):'?';by[k]=(by[k]||0)+1});const mk=Object.entries(P.miss);const any=P.plan.length+P.upd.length+P.conf.length;
+    return sheetHead('Lista de absențe','Absențele de la orele tale')+`<div class="stack"><div class="card" style="padding:14px 16px;background:var(--card2)">
+     <div style="font-size:15px"><b>${P.plan.length}</b> absențe noi${P.conf.length?` · <b style="color:#34D27B">${P.conf.length}</b> confirmate ca trecute`:''}${P.upd.length?` · <b>${P.upd.length}</b> motivate între timp`:''}</div>
+     ${Object.entries(by).map(([k,n])=>`<div class="sub">${k}: ${n}</div>`).join('')}${P.same?`<div class="sub">${P.same} există deja · sărite</div>`:''}${P.other?`<div class="sub">${P.other} de la alte materii sau clase · sărite</div>`:''}
+     ${mk.length?`<div class="sub" style="color:var(--warn)">Nepotrivite: ${mk.slice(0,6).map(([k,n])=>esc(k)+(n>1?' ('+n+')':'')).join(', ')}${mk.length>6?'…':''}</div>`:''}</div>
+     <p class="muted" style="margin:0;font-size:13px;line-height:1.5">Se adaugă în catalogul fiecărei materii absențele care lipsesc și se actualizează cele motivate. Totalurile clasei de diriginție se iau din fișierul „situația școlară”.</p>
+     <button class="btn pri" data-a="impAbsList" ${any?'':'disabled'}>Importă</button><button class="btn" data-a="impBack">Alt fișier</button></div>`}
   if(IMP.auto&&!IMP.manual){const r=computeImport();const nm=Object.keys(r.res).length;const tot=Object.values(r.res).reduce((x,o)=>x+o.t,0),nem=Object.values(r.res).reduce((x,o)=>x+o.n,0);
     return sheetHead('Catalogul electronic','Absențele clasei')+`<div class="stack"><div class="card" style="padding:14px 16px;background:var(--card2)"><div style="font-size:15px"><b>${nm}</b> din ${studentsOf(homeroom().id).length} elevi recunoscuți</div><div class="sub">${tot} absențe · ${nem} nemotivate · medii și purtare incluse</div>
      ${r.un.length?`<div class="sub" style="color:var(--warn)">Nerecunoscuți: ${r.un.slice(0,8).map(esc).join(', ')}</div>`:''}</div>
@@ -1189,9 +1216,10 @@ const A={
   delDay:d=>{if(!confirm('Ștergi toate absențele elevului din această zi?'))return;live('absences').filter(a=>a.studentId===d.id&&a.date===d.d).forEach(a=>del('absences',a.id));refresh()},
   impOpen:()=>{IMP={step:1};openSheet(shImport)},
   impBack:()=>{IMP={step:1};rerenderSheet()},impManual:()=>{IMP.manual=true;rerenderSheet()},
-  impGrades:()=>{const P=gradeImportPlan();P.plan.forEach((x,i)=>upsert('grades',{id:uid()+i,...x,done:true}));markDone(P.conf);toast(`${plural(P.plan.length,'notă adăugată','note adăugate')}${P.conf.length?' · '+P.conf.length+' confirmate':''}`);IMP=null;closeSheet()},
+  impGrades:()=>{const P=gradeImportPlan();P.plan.forEach((x,i)=>upsert('grades',{id:uid()+i,...x,done:true}));markDone(P.conf);toast(`${plural(P.plan.length,'notă adăugată','note adăugate')}${P.conf.length?' · '+P.conf.length+' confirmate':''}`);IMP=null;closeSheet();impNext()},
+  impAbsList:()=>{const P=absListPlan();P.plan.forEach((x,i)=>upsert('absences',{id:uid()+i,...x}));P.upd.forEach(a=>{a.motivated=a._mot;delete a._mot;upsert('absences',a)});markDone(P.conf);toast(`${plural(P.plan.length,'absență adăugată','absențe adăugate')}${P.conf.length?' · '+P.conf.length+' confirmate':''}${P.upd.length?' · '+P.upd.length+' motivate':''}`);IMP=null;closeSheet();refresh();impNext()},
   impPaste:()=>{const t=$('#impt')?.value||'';if(!t.trim()){toast('Lipește mai întâi tabelul');return}prepImport(parseTable(t))},
-  impSave:()=>{const r=computeImport();{const hc=homeroom();let k=0;for(const sid in r.det){for(const x of r.det[sid]){if(!x.a)continue;const ds=x.a.split(',').map(y=>anyDate(y.trim())).filter(Boolean);const cs=live('classes').filter(c=>c.name===hc.name&&(normSub(c.subject).includes(normSub(x.s))||normSub(x.s).includes(normSub(c.subject))));const st=byId('students',sid);for(const c of cs){const os=live('students').find(z=>z.classId===c.id&&normName(z.name).join(' ')===normName(st?.name).join(' '));if(!os)continue;live('absences').filter(a=>a.studentId===os.id&&a.done===false&&ds.includes(a.date)).forEach(a=>{a.done=true;upsert('absences',a);k++})}}}if(k)toast(k+' absențe confirmate')}S.ecat={date:today(),rows:r.res,detail:r.det,avg:r.av,cond:r.co,unmatched:r.un,updatedAt:Date.now()};save();toast(`Import reușit · ${Object.keys(r.res).length} elevi`);IMP=null;closeSheet()},
+  impSave:()=>{const r=computeImport();{const hc=homeroom();let k=0;for(const sid in r.det){for(const x of r.det[sid]){if(!x.a)continue;const ds=x.a.split(',').map(y=>anyDate(y.trim())).filter(Boolean);const cs=live('classes').filter(c=>c.name===hc.name&&(normSub(c.subject).includes(normSub(x.s))||normSub(x.s).includes(normSub(c.subject))));const st=byId('students',sid);for(const c of cs){const os=live('students').find(z=>z.classId===c.id&&normName(z.name).join(' ')===normName(st?.name).join(' '));if(!os)continue;live('absences').filter(a=>a.studentId===os.id&&a.done===false&&ds.includes(a.date)).forEach(a=>{a.done=true;upsert('absences',a);k++})}}}if(k)toast(k+' absențe confirmate')}S.ecat={date:today(),rows:r.res,detail:r.det,avg:r.av,cond:r.co,unmatched:r.un,updatedAt:Date.now()};save();toast(`Import reușit · ${Object.keys(r.res).length} elevi`);IMP=null;closeSheet();impNext()},
   dfil:d=>{ui.dfil=d.v;render(false)},
   docNew:d=>{const hc=homeroom();if(!hc){toast('Alege mai întâi clasa de diriginție');return}DOC={id:uid(),studentId:d.sid||'',classId:hc.id,kind:'med',received:today(),files:[],inCatalog:false,_new:true};openSheet(shDoc)},
   docEdit:d=>{DOC=JSON.parse(JSON.stringify(byId('docs',d.id)));openSheet(shDoc)},
@@ -1298,7 +1326,7 @@ const CH={
   accent:el=>{setS(s=>s.accent=el.value);applyTheme();render(false)},
   gk:el=>{ui.gk=el.value},
   impMap:el=>{IMP.map[el.dataset.k]=+el.value;rerenderSheet()},
-  impFile:async el=>{const f=el.files[0];el.value='';if(f)readImportFile(f)},
+  impFile:async el=>{const fs=[...el.files];el.value='';IMPQ=fs.slice(1);if(fs[0])readImportFile(fs[0])},
   quickDoc:async el=>{const fs=[...el.files];const sid=el.dataset.sid;el.value='';if(!fs.length)return;const st=byId('students',sid);toast('Se pregătește poza…');const files=[];for(const f of fs){const r=await ingest(f);if(r)files.push(r)}
     DOC={id:uid(),studentId:sid,classId:st.classId,kind:'med',received:today(),files,inCatalog:false,_new:true};openSheet(shDoc)},
   docField:el=>{if(!DOC)return;DOC[el.dataset.k]=el.value;if(el.dataset.k==='from'&&(!DOC.to||DOC.to<el.value))DOC.to=el.value;if(['from','to'].includes(el.dataset.k))rerenderSheet()},
@@ -1424,7 +1452,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 let dragN=0;document.addEventListener('dragenter',e=>{if([...(e.dataTransfer?.types||[])].includes('Files')){dragN++;$('#drop').classList.add('show')}});
 document.addEventListener('dragleave',()=>{if(--dragN<=0){dragN=0;$('#drop').classList.remove('show')}});
 document.addEventListener('dragover',e=>{if([...(e.dataTransfer?.types||[])].includes('Files'))e.preventDefault()});
-document.addEventListener('drop',e=>{const f=e.dataTransfer?.files?.[0];if(!f)return;e.preventDefault();dragN=0;$('#drop').classList.remove('show');if(/\.(xlsx|xls|csv|txt)$/i.test(f.name)){IMP={step:1};openSheet(shImport);readImportFile(f)}else if(/\.json$/i.test(f.name))toast('Pentru copii de siguranță folosește Setări → Importă copie');});
+document.addEventListener('drop',e=>{const all=[...(e.dataTransfer?.files||[])].filter(x=>/\.(xlsx|xls|csv|txt)$/i.test(x.name));const f=all[0]||e.dataTransfer?.files?.[0];if(!f)return;IMPQ=all.slice(1);e.preventDefault();dragN=0;$('#drop').classList.remove('show');if(/\.(xlsx|xls|csv|txt)$/i.test(f.name)){IMP={step:1};openSheet(shImport);readImportFile(f)}else if(/\.json$/i.test(f.name))toast('Pentru copii de siguranță folosește Setări → Importă copie');});
 </script>
 </body>
 </html>
