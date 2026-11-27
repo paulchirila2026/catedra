@@ -716,7 +716,7 @@ function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;
 const meBadge=()=>S.settings.avatar!=null&&AVATARS[S.settings.avatar]?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='5.2';
+const APP_VER='5.3';
 const NEWS=['Foile se închid trăgând în jos','Toate orele din ceas funcționează','Butonul + Ședință repornit','Nemotivatele pe primul loc','Absențe cu adeverință și cu cerere (maximum 40) la fiecare elev','Ceas cu toate orele, și seara','Note mai mari, clasele pe tot rândul'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
@@ -872,11 +872,11 @@ function vCal(){
    ${L.map(l=>`<div class="ev" style="cursor:default"><div class="t tnum" style="width:46px;font-size:13px;color:var(--tx3)">${fmtT(l.b.s)}</div><div class="cb" style="background:${l.cls?l.cls.color:'var(--tx4)'};height:auto;align-self:stretch"></div><div class="grow"><div class="nm">${esc(subjOf(l))} <span class="muted" style="font-weight:400">${l.cls?esc(l.cls.name):''}</span></div></div></div>`).join('')}</div>
    ${!de.length&&!L.length?'<p class="dim" style="font-size:14px;margin:6px 0">Nimic programat.</p>':''}</div>`;
   if(XL){return `<div class="hdr"><div><h1 class="title">Calendar</h1><div class="eyebrow" style="color:var(--ac);margin-top:4px">Anul școlar ${modules().length?modules()[0].start.slice(0,4)+'–'+modules()[modules().length-1].end.slice(0,4):''}</div></div>
-   <div class="row" style="gap:8px"><button class="btn sm" data-a="calToday" style="color:var(--ac);">Azi</button><button class="btn sm pri" data-a="eventEdit" data-date="${sd}">${ic('plus',16,2.4)} Activitate nouă</button></div></div>
+   <div class="row" style="gap:8px"><button class="btn sm" data-a="calToday" style="color:var(--ac);">Azi</button><button class="btn sm pri" data-a="eventEdit" data-date="${sd}">${ic('plus',16,2.4)} Activitate nouă</button><button class="round me" data-a="tab" data-t="set" aria-label="Setări">${meBadge()}</button></div></div>
    <div class="calx"><div class="stack" style="gap:14px"><div><div class="mnav"><button data-a="calMove" data-n="-1" aria-label="Luna anterioară">${ic('cl',16)}</button><b>${LUNI[m-1][0].toUpperCase()+LUNI[m-1].slice(1)} ${y}${ms?' · '+esc(ms):''}</b><button data-a="calMove" data-n="1" aria-label="Luna următoare">${ic('cr',16)}</button></div>
    <div class="calh">${[1,2,3,4,5,6,7].map(i=>`<div>${ZS[i]}</div>`).join('')}</div><div class="calg">${cells}</div></div>${agenda}<div><div class="sec">Module</div><div class="list">${modules().map(p=>{const on=inR(d0,p);return `<div class="li" style="min-height:38px;padding:4px 0"><b style="width:34px;font-size:13px;color:${on?'var(--ac)':'var(--tx2)'}">M${(p.name.match(/\d+/)||[''])[0]}</b><span class="grow" style="font-size:12.5px;color:${on?'var(--tx)':'var(--tx3)'}">${fmtR(p.start,p.end)}</span>${on?'<span class="pill" style="color:var(--ac)">acum</span>':''}</div>`}).join('')}</div></div></div><div>${yearCal()}</div></div>`}
   return `<div class="hdr"><div><h1 class="title">${LUNI[m-1][0].toUpperCase()+LUNI[m-1].slice(1)}</h1><div class="eyebrow" style="color:var(--ac);margin-top:5px">${y}${ms?' · '+esc(ms):''}</div></div>
-   <div class="row" style="gap:8px"><button class="btn sm" data-a="calToday" style="height:36px;color:var(--ac);">Azi</button></div></div>
+   <div class="row" style="gap:8px"><button class="btn sm" data-a="calToday" style="height:36px;color:var(--ac);">Azi</button><button class="round me" data-a="tab" data-t="set" aria-label="Setări">${meBadge()}</button></div></div>
    <button class="fab round-fab" data-a="eventEdit" data-date="${sd}" aria-label="Activitate nouă">${ic('plus',26,2.6)}</button>
    <div class="cols c3" style="margin-top:10px"><div><div class="calswipe"><div class="calh">${[1,2,3,4,5,6,7].map(i=>`<div>${ZS[i]}</div>`).join('')}</div><div class="calg">${cells}</div></div>
    <div class="dim" style="font-size:12px;text-align:center;margin-top:6px">glisează stânga / dreapta pentru altă lună</div></div><div>${agenda}</div></div>`;
