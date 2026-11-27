@@ -392,7 +392,7 @@ html:not(.xl) .xlonly,.xlo{display:none}
 .xl .ttw{max-width:none;margin-top:8px!important}
 .xl .tc{height:clamp(34px,calc((var(--H) - 226px) / var(--rows) - 4px),92px);padding:0 12px;border-radius:9px;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;border:0}
 .xl .tc.e{border:1px dashed var(--line)}
-.xl .tc .xf.n::before{content:'';display:none;width:7px;height:7px;border-radius:50%;background:var(--cc);margin-right:8px;vertical-align:1px}.xl .tc.mn .xf.n::before{display:inline-block}
+.xl .tc .xf.n::before{content:'';display:none;width:7px;height:7px;border-radius:50%;background:var(--cc);margin-right:8px;vertical-align:1px}
 .xl .tc b,.xl .tc small{display:none}
 .xl .tc .xf{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .xl .tc .xf.n{font-size:14.5px;font-weight:700;white-space:normal;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -716,7 +716,7 @@ function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;
 const meBadge=()=>S.settings.avatar!=null&&AVATARS[S.settings.avatar]?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='4.9';
+const APP_VER='5.0';
 const NEWS=['Foile se închid trăgând în jos','Toate orele din ceas funcționează','Butonul + Ședință repornit','Nemotivatele pe primul loc','Absențe cu adeverință și cu cerere (maximum 40) la fiecare elev','Ceas cu toate orele, și seara','Note mai mari, clasele pe tot rândul'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
