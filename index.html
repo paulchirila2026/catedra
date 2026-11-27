@@ -441,6 +441,7 @@ html:not(.xl) .xlonly,.xlo{display:none}
 .mx .nmc span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mx .lf{display:flex;align-items:center;justify-content:flex-end;height:34px;border-top:1px solid var(--line);font-size:11px;font-weight:700;white-space:nowrap;padding-left:6px}
 /* year calendar */
+:root{--ysc:rgba(255,255,255,.07);--yfr:rgba(255,150,40,.17)}
 .yr{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 22px}
 .ym .yt{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tx2);margin:0 0 3px;display:flex;justify-content:space-between}
 .ym .yh,.ym .yg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
@@ -448,11 +449,14 @@ html:not(.xl) .xlonly,.xlo{display:none}
 .yd{position:relative;height:clamp(24px,calc((var(--H) - 330px) / 18),38px);border:0;background:none;color:var(--tx);font-size:12.5px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:10px;margin:1.5px}
 .yd.o{visibility:hidden}.yd.we{color:var(--tx4)}
 .yd .dn{width:26px;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;position:relative}
-.yd.m1{background:rgba(70,200,170,.13)}.yd.m2{background:rgba(255,214,70,.12)}.yd.m3{background:rgba(130,140,255,.15)}.yd.m4{background:rgba(255,120,170,.13)}.yd.m5{background:rgba(235,190,130,.12)}
-.yd.vac{background:rgba(255,150,40,.26);color:#ffc183}.yd.free{background:rgba(255,150,40,.5);color:#fff;font-weight:700}
+.yd.sc{background:var(--ysc)}
+.yd.fr{background:var(--yfr);color:#ffc183}
+.yd.we{color:#ffc183}
+.yd.sel{box-shadow:inset 0 0 0 1.5px var(--tx)}
+.yd.today,.yd.today.fr{background:var(--ac);color:var(--onac);font-weight:700}
+.yd.today .dn{background:none;box-shadow:none}
+.yd.sel.today{box-shadow:none}
 .yd .pd{position:absolute;bottom:3px;left:0;right:0;display:flex;justify-content:center;gap:3px}.yd .pd i{width:5px;height:5px;border-radius:50%;display:block}
-.yd.sel .dn{box-shadow:inset 0 0 0 1.5px var(--tx)}
-.yd.today .dn{background:var(--ac);color:var(--onac);font-weight:700;box-shadow:none}
 .yd .ed{position:absolute;top:4px;right:6px;width:5px;height:5px;border-radius:50%;background:var(--ac)}
 .ylg{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:11.5px;color:var(--tx3);margin-top:12px;align-items:center}
 .ylg span{display:inline-flex;align-items:center;gap:6px}.ylg i{width:12px;height:12px;border-radius:3px;display:block}
@@ -498,7 +502,7 @@ const monday=s=>addDays(s,1-dow(s));
 const LUNI=['ianuarie','februarie','martie','aprilie','mai','iunie','iulie','august','septembrie','octombrie','noiembrie','decembrie'];
 const LUNI_S=['ian','feb','mar','apr','mai','iun','iul','aug','sep','oct','nov','dec'];
 const ZILE=['','Luni','Marți','Miercuri','Joi','Vineri','Sâmbătă','Duminică'];
-const ZS=['','L','Ma','Mi','J','V','S','D'];
+const ZS=['','L','M','M','J','V','S','D'];
 const fmtD=(s,y)=>{const d=parse(s);return `${d.getDate()} ${LUNI[d.getMonth()]}${y?' '+d.getFullYear():''}`};
 const fmtDs=s=>{const d=parse(s);return `${d.getDate()} ${LUNI_S[d.getMonth()]}`};
 const fmtR=(a,b)=>b&&b!==a?`${fmtD(a)} – ${fmtD(b)}`:fmtD(a);
@@ -712,7 +716,7 @@ function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;
 const meBadge=()=>S.settings.avatar!=null&&AVATARS[S.settings.avatar]?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='4.8';
+const APP_VER='4.9';
 const NEWS=['Foile se închid trăgând în jos','Toate orele din ceas funcționează','Butonul + Ședință repornit','Nemotivatele pe primul loc','Absențe cu adeverință și cu cerere (maximum 40) la fiecare elev','Ceas cu toate orele, și seara','Note mai mari, clasele pe tot rândul'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
@@ -895,13 +899,12 @@ function yearCal(){
     for(let i=0;i<rows*7;i++){const x=addDays(st,i);const inM=x.slice(0,7)===`${y}-${pad(m)}`;
       if(!inM){cells+='<button class="yd o" tabindex="-1" aria-hidden="true"></button>';continue}
       const info=dayInfo(x);const de=evs.some(e=>inR(x,e)&&e.type!=='liber');const pr=dow(x)<=5&&info.kind==='school'?practiceOf(monday(x),W):[];
-      const cls=['yd',info.kind==='vacation'?'vac':info.kind==='free'?'free':info.kind==='weekend'?'we':mi(x),pr.length?'pr':'',x===ui.sel?'sel':'',x===d0?'today':''].join(' ');
+      const cls=['yd',info.kind==='school'?'sc':'fr',pr.length?'pr':'',x===ui.sel?'sel':'',x===d0?'today':''].join(' ');
       cells+=`<button class="${cls}" data-a="selDay" data-d="${x}" aria-label="${fmtD(x,true)}"><span class="dn">${parse(x).getDate()}</span>${de?'<i class="ed"></i>':''}${pr.length?`<span class="pd">${pr.map(c=>`<i style="background:${c.color}"></i>`).join('')}</span>`:''}</button>`}
     const mod=ms.find(p=>p.start.slice(0,7)===`${y}-${pad(m)}`);
-    return `<div class="ym"><div class="yt"><span>${LUNI[m-1]} ${m===1||m===a.slice(5,7)*1&&y===+a.slice(0,4)?y:''}</span>${mod?`<span style="color:var(--tx4)">${'M'+((mod.name.match(/\d+/)||[''])[0])}</span>`:''}</div><div class="yh">${[1,2,3,4,5,6,7].map(i=>`<div>${ZS[i]}</div>`).join('')}</div><div class="yg">${cells}</div></div>`}).join('');
+    return `<div class="ym"><div class="yt"><span>${LUNI[m-1]} ${m===1||m===a.slice(5,7)*1&&y===+a.slice(0,4)?y:''}</span></div><div class="yh">${[1,2,3,4,5,6,7].map(i=>`<div>${ZS[i]}</div>`).join('')}</div><div class="yg">${cells}</div></div>`}).join('');
   const pc=Object.keys(PRACT).map(nm=>{const c=live('classes').find(c=>c.name===nm);return c?`<span><i style="background:${c.color};width:7px;height:7px;border-radius:50%"></i>practică ${esc(nm)}</span>`:''}).join('');
-  const mm=['rgba(70,200,170,.4)','rgba(255,214,70,.4)','rgba(130,140,255,.45)','rgba(255,120,170,.4)','rgba(235,190,130,.4)'];
-  return `<div class="yr">${out}</div><div class="ylg">${ms.slice(0,5).map((p,i)=>`<span><i style="background:${mm[i%5]}"></i>M${(p.name.match(/\d+/)||[''])[0]}</span>`).join('')}<span><i style="background:rgba(255,150,40,.45)"></i>vacanță</span><span><i style="background:rgba(255,150,40,.8)"></i>zi liberă</span>${pc}<span><i style="background:var(--ac);width:6px;height:6px;border-radius:3px"></i>eveniment</span></div>`;
+  return `<div class="yr">${out}</div><div class="ylg"><span><i style="background:var(--yfr);border-radius:4px"></i>zi liberă, vacanță, weekend</span><span><i style="background:var(--ysc);border-radius:4px"></i>zi de școală</span><span><i style="background:var(--ac);border-radius:4px"></i>azi</span>${pc}<span><i style="background:var(--ac);width:6px;height:6px;border-radius:50%"></i>eveniment</span></div>`;
 }
 
 /* ---------- CATALOG ---------- */
