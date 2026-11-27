@@ -390,11 +390,12 @@ html:not(.xl) .xlonly,.xlo{display:none}
 .xl .calh{font-size:11px}
 /* orar */
 .xl .ttw{max-width:none;margin-top:8px!important}
-.xl .tc{height:clamp(34px,calc((var(--H) - 226px) / var(--rows) - 4px),92px);padding:0 12px;border-radius:9px;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;border-left:3px solid var(--cc,transparent)}
-.xl .tc.e{border-left:1px dashed var(--line)}
+.xl .tc{height:clamp(34px,calc((var(--H) - 226px) / var(--rows) - 4px),92px);padding:0 12px;border-radius:9px;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;border:0}
+.xl .tc.e{border:1px dashed var(--line)}
+.xl .tc .xf.n::before{content:'';display:none;width:7px;height:7px;border-radius:50%;background:var(--cc);margin-right:8px;vertical-align:1px}.xl .tc.mn .xf.n::before{display:inline-block}
 .xl .tc b,.xl .tc small{display:none}
 .xl .tc .xf{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.xl .tc .xf.n{font-size:14.5px;font-weight:700}
+.xl .tc .xf.n{font-size:14.5px;font-weight:700;white-space:normal;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .xl .tc .xf.t{font-size:12px;color:var(--tx3)}
 .xl details.lgd{display:none}
 .xl .tdh{font-size:12px}
@@ -414,12 +415,12 @@ html:not(.xl) .xlonly,.xlo{display:none}
 .wsh{display:block}
 .wsh .wg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:start}
 .wsh.m .wg{grid-template-columns:repeat(2,minmax(0,1fr))}
-.wsh.t .wg{grid-template-columns:minmax(0,.78fr) minmax(0,1.5fr)}
+.wsh.t .wg{grid-template-columns:minmax(0,1fr) minmax(0,1.35fr)}
 .dcol{columns:2;column-gap:14px}.dcol .li{break-inside:avoid}
 .dc{border:1px solid var(--line);border-radius:14px;background:var(--card);margin:0 0 12px;overflow:hidden;break-inside:avoid}
 .dch{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 14px;background:var(--card3)}
 .dcd{display:flex;align-items:baseline;gap:8px}.dcd b{font-size:16px}.dcd span{font-size:13px;color:var(--tx3)}
-.dcm{font-size:12px;color:var(--tx3);font-weight:600}
+.dcm{font-size:12px;color:var(--tx3);font-weight:600;white-space:nowrap}.dcd span{white-space:nowrap}
 .dc.td .dch{background:color-mix(in srgb,var(--ac) 18%,transparent)}.dc.td .dcd b,.dc.td .dcd span{color:var(--ac)}
 .dcl{padding:2px 14px 4px}.dcl .li:last-child{border-bottom:0}
 .wsh.s .wg{grid-template-columns:minmax(0,.85fr) minmax(0,.95fr) minmax(0,1.4fr)}
@@ -442,15 +443,15 @@ html:not(.xl) .xlonly,.xlo{display:none}
 .ym .yt{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tx2);margin:0 0 3px;display:flex;justify-content:space-between}
 .ym .yh,.ym .yg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
 .ym .yh{font-size:9.5px;color:var(--tx4);text-align:center;font-weight:700;padding-bottom:1px}
-.yd{position:relative;height:clamp(24px,calc((var(--H) - 330px) / 18),38px);border:0;background:none;color:var(--tx);font-size:12.5px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:0;box-shadow:inset 0 0 0 1px var(--bg)}
+.yd{position:relative;height:clamp(24px,calc((var(--H) - 330px) / 18),38px);border:0;background:none;color:var(--tx);font-size:12.5px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:10px;margin:1.5px}
 .yd.o{visibility:hidden}.yd.we{color:var(--tx4)}
 .yd .dn{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative}
 .yd.m1{background:rgba(70,200,170,.13)}.yd.m2{background:rgba(255,214,70,.12)}.yd.m3{background:rgba(130,140,255,.15)}.yd.m4{background:rgba(255,120,170,.13)}.yd.m5{background:rgba(235,190,130,.12)}
 .yd.vac{background:rgba(255,150,40,.26);color:#ffc183}.yd.free{background:rgba(255,150,40,.5);color:#fff;font-weight:700}
-.yd.pr{font-weight:600}
+.yd .pd{position:absolute;bottom:3px;left:0;right:0;display:flex;justify-content:center;gap:3px}.yd .pd i{width:5px;height:5px;border-radius:50%;display:block}
 .yd.sel .dn{box-shadow:inset 0 0 0 1.5px var(--tx)}
 .yd.today .dn{background:var(--ac);color:var(--onac);font-weight:700;box-shadow:none}
-.yd .ed{position:absolute;top:3px;right:4px;width:5px;height:5px;border-radius:3px;background:var(--ac)}
+.yd .ed{position:absolute;top:4px;right:6px;width:5px;height:5px;border-radius:50%;background:var(--ac)}
 .ylg{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:11.5px;color:var(--tx3);margin-top:12px;align-items:center}
 .ylg span{display:inline-flex;align-items:center;gap:6px}.ylg i{width:12px;height:12px;border-radius:3px;display:block}
 .mnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
@@ -460,6 +461,11 @@ html:not(.xl) .xlonly,.xlo{display:none}
 .prg{height:5px;border-radius:3px;background:var(--card3);overflow:hidden;margin-top:5px}.prg i{display:block;height:100%;border-radius:3px;background:var(--ac)}
 /* event wide */
 .wsh.ev2 .wg{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px}
+/* radii: 10 controls, 14 containers */
+.btn,.btn.sm,.chip,.seg button,.pm,.stchip,.pill,.tag,.key,.mnav button,.round,.fab,.round-fab,.thumb,.tc,.xl .tc,.xl .catl .pm,.sfg .pm,.mx .c i,.ttc,.in,.day,.cd .dn,.md span,.set .ico,.convb{border-radius:10px}
+.card,.card.hero,.stat,.stats2 .stat,.stats3 .stat,.statl,.seg,.dc,.cchip,.tile,.ttg .c,.dctr,.nowc,.mcal,#toast,#upd,.toggle{border-radius:14px}
+.seg{padding:4px}.ck span{border-radius:10px}
+.fab,.round-fab{border-radius:16px}
 </style>
 </head>
 <body>
@@ -676,7 +682,7 @@ function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;con
 const meBadge=()=>S.settings.avatar!=null&&AVATARS[S.settings.avatar]?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='4.3';
+const APP_VER='4.4';
 const NEWS=['Foile se închid trăgând în jos','Toate orele din ceas funcționează','Butonul + Ședință repornit','Nemotivatele pe primul loc','Absențe cu adeverință și cu cerere (maximum 40) la fiecare elev','Ceas cu toate orele, și seara','Note mai mari, clasele pe tot rândul'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
@@ -832,11 +838,11 @@ function vCal(){
    ${L.map(l=>`<div class="ev" style="cursor:default"><div class="t tnum" style="width:46px;font-size:13px;color:var(--tx3)">${fmtT(l.b.s)}</div><div class="cb" style="background:${l.cls?l.cls.color:'var(--tx4)'};height:auto;align-self:stretch"></div><div class="grow"><div class="nm">${esc(subjOf(l))} <span class="muted" style="font-weight:400">${l.cls?esc(l.cls.name):''}</span></div></div></div>`).join('')}</div>
    ${!de.length&&!L.length?'<p class="dim" style="font-size:14px;margin:6px 0">Nimic programat.</p>':''}</div>`;
   if(XL){return `<div class="hdr"><div><h1 class="title">Calendar</h1><div class="eyebrow" style="color:var(--ac);margin-top:4px">Anul școlar ${modules().length?modules()[0].start.slice(0,4)+'–'+modules()[modules().length-1].end.slice(0,4):''}</div></div>
-   <div class="row" style="gap:8px"><button class="btn sm" data-a="calToday" style="color:var(--ac);border-radius:999px">Azi</button><button class="btn sm pri" data-a="eventEdit" data-date="${sd}">${ic('plus',16,2.4)} Activitate nouă</button></div></div>
+   <div class="row" style="gap:8px"><button class="btn sm" data-a="calToday" style="color:var(--ac);">Azi</button><button class="btn sm pri" data-a="eventEdit" data-date="${sd}">${ic('plus',16,2.4)} Activitate nouă</button></div></div>
    <div class="calx"><div class="stack" style="gap:14px"><div><div class="mnav"><button data-a="calMove" data-n="-1" aria-label="Luna anterioară">${ic('cl',16)}</button><b>${LUNI[m-1][0].toUpperCase()+LUNI[m-1].slice(1)} ${y}${ms?' · '+esc(ms):''}</b><button data-a="calMove" data-n="1" aria-label="Luna următoare">${ic('cr',16)}</button></div>
    <div class="calh">${[1,2,3,4,5,6,7].map(i=>`<div>${ZS[i]}</div>`).join('')}</div><div class="calg">${cells}</div></div>${agenda}<div><div class="sec">Module</div><div class="list">${modules().map(p=>{const on=inR(d0,p);return `<div class="li" style="min-height:38px;padding:4px 0"><b style="width:34px;font-size:13px;color:${on?'var(--ac)':'var(--tx2)'}">M${(p.name.match(/\d+/)||[''])[0]}</b><span class="grow" style="font-size:12.5px;color:${on?'var(--tx)':'var(--tx3)'}">${fmtR(p.start,p.end)}</span>${on?'<span class="pill" style="color:var(--ac)">acum</span>':''}</div>`}).join('')}</div></div></div><div>${yearCal()}</div></div>`}
   return `<div class="hdr"><div><h1 class="title">${LUNI[m-1][0].toUpperCase()+LUNI[m-1].slice(1)}</h1><div class="eyebrow" style="color:var(--ac);margin-top:5px">${y}${ms?' · '+esc(ms):''}</div></div>
-   <div class="row" style="gap:8px"><button class="btn sm" data-a="calToday" style="height:36px;color:var(--ac);border-radius:999px">Azi</button></div></div>
+   <div class="row" style="gap:8px"><button class="btn sm" data-a="calToday" style="height:36px;color:var(--ac);">Azi</button></div></div>
    <button class="fab round-fab" data-a="eventEdit" data-date="${sd}" aria-label="Activitate nouă">${ic('plus',26,2.6)}</button>
    <div class="cols c3" style="margin-top:10px"><div><div class="calswipe"><div class="calh">${[1,2,3,4,5,6,7].map(i=>`<div>${ZS[i]}</div>`).join('')}</div><div class="calg">${cells}</div></div>
    <div class="dim" style="font-size:12px;text-align:center;margin-top:6px">glisează stânga / dreapta pentru altă lună</div></div><div>${agenda}</div></div>`;
@@ -860,11 +866,10 @@ function yearCal(){
       if(!inM){cells+='<button class="yd o" tabindex="-1" aria-hidden="true"></button>';continue}
       const info=dayInfo(x);const de=evs.some(e=>inR(x,e)&&e.type!=='liber');const pr=dow(x)<=5&&info.kind==='school'?practiceOf(monday(x),W):[];
       const cls=['yd',info.kind==='vacation'?'vac':info.kind==='free'?'free':info.kind==='weekend'?'we':mi(x),pr.length?'pr':'',x===ui.sel?'sel':'',x===d0?'today':''].join(' ');
-      const bg=pr.length?`background:${pr.length===1?hexA(pr[0].color,.5):`linear-gradient(135deg,${pr.map((c,i)=>`${hexA(c.color,.55)} ${Math.round(i/pr.length*100)}% ${Math.round((i+1)/pr.length*100)}%`).join(',')})`}`:'';
-      cells+=`<button class="${cls}" ${bg?`style="${bg}"`:''} data-a="selDay" data-d="${x}" aria-label="${fmtD(x,true)}"><span class="dn">${parse(x).getDate()}</span>${de?'<i class="ed"></i>':''}</button>`}
+      cells+=`<button class="${cls}" data-a="selDay" data-d="${x}" aria-label="${fmtD(x,true)}"><span class="dn">${parse(x).getDate()}</span>${de?'<i class="ed"></i>':''}${pr.length?`<span class="pd">${pr.map(c=>`<i style="background:${c.color}"></i>`).join('')}</span>`:''}</button>`}
     const mod=ms.find(p=>p.start.slice(0,7)===`${y}-${pad(m)}`);
     return `<div class="ym"><div class="yt"><span>${LUNI[m-1]} ${m===1||m===a.slice(5,7)*1&&y===+a.slice(0,4)?y:''}</span>${mod?`<span style="color:var(--tx4)">${'M'+((mod.name.match(/\d+/)||[''])[0])}</span>`:''}</div><div class="yh">${[1,2,3,4,5,6,7].map(i=>`<div>${ZS[i]}</div>`).join('')}</div><div class="yg">${cells}</div></div>`}).join('');
-  const pc=Object.keys(PRACT).map(nm=>{const c=live('classes').find(c=>c.name===nm);return c?`<span><i style="background:${hexA(c.color,.55)}"></i>practică ${esc(nm)}</span>`:''}).join('');
+  const pc=Object.keys(PRACT).map(nm=>{const c=live('classes').find(c=>c.name===nm);return c?`<span><i style="background:${c.color};width:7px;height:7px;border-radius:50%"></i>practică ${esc(nm)}</span>`:''}).join('');
   const mm=['rgba(70,200,170,.4)','rgba(255,214,70,.4)','rgba(130,140,255,.45)','rgba(255,120,170,.4)','rgba(235,190,130,.4)'];
   return `<div class="yr">${out}</div><div class="ylg">${ms.slice(0,5).map((p,i)=>`<span><i style="background:${mm[i%5]}"></i>M${(p.name.match(/\d+/)||[''])[0]}</span>`).join('')}<span><i style="background:rgba(255,150,40,.45)"></i>vacanță</span><span><i style="background:rgba(255,150,40,.8)"></i>zi liberă</span>${pc}<span><i style="background:var(--ac);width:6px;height:6px;border-radius:3px"></i>eveniment</span></div>`;
 }
@@ -904,10 +909,10 @@ function vOrar(){
     g+=`<div class="trh"><b>${h}</b><small>${b?fmtT(b.s):''}</small></div>`;
     for(let d=1;d<=5;d++){const on=school&&d===td&&h===curH;
       if(mode==='me'){const s=sl.find(x=>x.day===d&&x.hour===h);const c=s&&byId('classes',s.classId);
-        g+=s?`<button class="tc ${on?'now':''}" data-a="slot" data-d="${d}" data-h="${h}" style="background:${hexA(c?c.color:'#888888',.14)};--cc:${c?c.color:'#888'}"><b style="color:${c?c.color:'var(--tx)'}">${esc(s.subject||cShort(c)||'')}</b><small>${c?esc(c.name):''}</small><span class="xf n" style="color:${c?c.color:'var(--tx)'}">${c?esc((c.subject||'').replace(/^M\d+\s*[:·]\s*/,'')):esc(s.subject||'')}</span><span class="xf t">${c?esc(c.name):''}${s.room?' · sala '+esc(s.room):''}</span></button>`
+        g+=s?`<button class="tc mn ${on?'now':''}" data-a="slot" data-d="${d}" data-h="${h}" style="background:${hexA(c?c.color:'#888888',.14)};--cc:${c?c.color:'#888'}"><b style="color:${c?c.color:'var(--tx)'}">${esc(s.subject||cShort(c)||'')}</b><small>${c?esc(c.name):''}</small><span class="xf n" style="color:${c?c.color:'var(--tx)'}">${c?esc((c.subject||'').replace(/^M\d+\s*[:·]\s*/,'')):esc(s.subject||'')}</span><span class="xf t">${c?esc(c.name):''}${s.room?' · sala '+esc(s.room):''}</span></button>`
            :`<button class="tc e ${d===td?'td':''}" data-a="slot" data-d="${d}" data-h="${h}" aria-label="Adaugă oră ${ZILE[d]} ora ${h}"></button>`;
       }else{const x=(hc.tt.days[d]||[])[h-1];const mine=x&&x[1]==='CP';
-        g+=x?`<button class="tc ${on?'now':''}" data-a="ttInfo" data-d="${d}" data-h="${h}" style="background:${mine?hexA(hc.color,.16):'var(--card)'};--cc:${mine?hc.color:'var(--line2)'}"><b style="color:${mine?hc.color:'var(--tx)'}">${esc(x[0])}</b><small class="xc">${esc(x[1]||'')}</small><span class="xf n" style="color:${mine?hc.color:'var(--tx)'}">${esc((hc.tt.legend?.[x[0]]||x[0]).replace(/\s*\(module\)/i,''))}</span><span class="xf t">${x[1]==='CP'?'Chirilă Paul':esc(hc.tt.teachers?.[x[1]]||x[1]||'')}</span></button>`:`<div class="tc e ${d===td?'td':''}"></div>`;
+        g+=x?`<button class="tc ${mine?'mn':''} ${on?'now':''}" data-a="ttInfo" data-d="${d}" data-h="${h}" style="background:${mine?hexA(hc.color,.16):'var(--card)'};--cc:${mine?hc.color:'var(--line2)'}"><b style="color:${mine?hc.color:'var(--tx)'}">${esc(x[0])}</b><small class="xc">${esc(x[1]||'')}</small><span class="xf n" style="color:${mine?hc.color:'var(--tx)'}">${esc((hc.tt.legend?.[x[0]]||x[0]).replace(/\s*\(module\)/i,''))}</span><span class="xf t">${x[1]==='CP'?'Chirilă Paul':esc(hc.tt.teachers?.[x[1]]||x[1]||'')}</span></button>`:`<div class="tc e ${d===td?'td':''}"></div>`;
       }}
   }
   const sw=hc&&hc.tt?`<div class="seg" style="margin-top:12px"><button class="${mode==='me'?'on':''}" data-a="ttMode" data-v="me">Orarul meu</button><button class="${mode==='cls'?'on':''}" data-a="ttMode" data-v="cls">Clasa ${esc(hc.name)}</button></div>`:'';
@@ -948,7 +953,8 @@ function motivable(){
     if(o.items.some(x=>x.date===date&&(normSub(x.subj).includes(sn)||sn.includes(normSub(x.subj)))))return;
     const docs=live('docs').filter(x=>x.studentId===st.id&&x.from&&date>=x.from&&date<=(x.to||x.from));
     if(docs.some(x=>x.inCatalog))return;
-    o.items.push({date,subj,left:diffDays(d,addDays(date,MOT_DAYS)),doc:docs[0]||null})};
+    if(docs.length)return;
+    o.items.push({date,subj,left:diffDays(d,addDays(date,MOT_DAYS)),doc:null})};
   if(E&&E.date&&E.detail){const ey=+E.date.slice(0,4),em=+E.date.slice(5,7),sy=em>=9?ey:ey-1;
     for(const sid in E.detail){const st=byId('students',sid);if(!st||st.deleted||st.classId!==hc.id)continue;
       for(const x of E.detail[sid]){if(!x.a||!(x.n>0))continue;
@@ -967,12 +973,12 @@ function shMot(){
   const d0=today();const days=[...Array(MOT_DAYS+1).keys()].map(i=>addDays(d0,i-MOT_DAYS));
   const by={};M.rows.forEach(o=>o.items.forEach(i=>{(by[i.date]=by[i.date]||[]).push({s:o.s,i})}));
   const lf=l=>l<=0?'azi':l===1?'mâine':l+' zile';
-  const mx=`<div class="mx" style="grid-template-columns:minmax(0,1fr) repeat(${days.length},32px) 54px"><div></div>${days.map(x=>`<div class="h ${dow(x)>5?'we':''} ${x===d0?'t':''}">${ZS[dow(x)]}<br>${parse(x).getDate()}</div>`).join('')}<div class="h" style="text-align:right">expiră</div>
+  const mx=`<div class="mx" style="grid-template-columns:minmax(${XL?150:0}px,1fr) repeat(${days.length},${XL?28:32}px) 54px"><div></div>${days.map(x=>`<div class="h ${dow(x)>5?'we':''} ${x===d0?'t':''}">${ZS[dow(x)]}<br>${parse(x).getDate()}</div>`).join('')}<div class="h" style="text-align:right">expiră</div>
    ${M.rows.map(o=>{const cnt={};o.items.forEach(i=>{(cnt[i.date]=cnt[i.date]||[]).push(i)});const l=o.items[0].left;
     return `<button class="nmc" data-a="dirStudent" data-id="${o.s.id}"><span>${esc(XL?o.s.name:o.s.name.split(' ').slice(0,2).map((w,i)=>i?w[0]+'.':w).join(' '))}</span></button>${days.map(x=>{const it=cnt[x]||[];const dd=it.length&&it.every(i=>i.doc);return `<div class="c ${dow(x)>5?'we':''} ${dd?'dd':''}">${it.length?`<i>${it.length}</i>`:''}</div>`}).join('')}<div class="lf" style="color:${l<=1?'var(--warn)':'var(--tx3)'}">${lf(l)}</div>`}).join('')}</div>
-   <div class="sub" style="margin-top:8px;line-height:1.5"><span style="color:var(--warn);font-weight:700">Portocaliu</span> = absențe fără document · <span style="color:#5BD38A;font-weight:700">verde</span> = acoperite de un document, încă netrecut în catalog. „Expiră” = în câte zile nu le mai poți motiva tu.</div>`;
+   <div class="sub" style="margin-top:8px;line-height:1.5">„Expiră” = în câte zile nu mai poți motiva tu absențele. Sunt afișate doar absențele nemotivate, fără document.</div>`;
   const dl=Object.keys(by).sort().reverse().map(dt=>{const L=by[dt];const g={};L.forEach(x=>{(g[x.s.id]=g[x.s.id]||{s:x.s,it:[]}).it.push(x.i)});const gs=Object.values(g).sort((a,b)=>a.s.name.localeCompare(b.s.name,'ro'));
-    return `<div class="dc ${dt===d0?'td':''}"><div class="dch"><div class="dcd"><b>${ZILE[dow(dt)]}</b><span>${parse(dt).getDate()} ${LUNI[parse(dt).getMonth()]}${dt===d0?' · azi':''}</span></div><span class="dcm">${plural(gs.length,'elev','elevi')} · ${plural(L.length,'absență','absențe')}</span></div>
+    return `<div class="dc ${dt===d0?'td':''}"><div class="dch"><div class="dcd"><b>${ZILE[dow(dt)]}</b><span>${parse(dt).getDate()} ${LUNI[parse(dt).getMonth()]}${dt===d0?' · azi':''}</span></div><span class="dcm">${plural(gs.length,'elev','elevi')} · ${L.length} abs.</span></div>
     <div class="list dcl">${gs.map(o=>{const doc=o.it.find(i=>i.doc)?.doc;return `<button class="li nb" data-a="dirStudent" data-id="${o.s.id}" style="min-height:44px;padding:6px 0;align-items:flex-start"><div class="grow" style="min-width:0"><div class="nm">${esc(o.s.name)}</div><div class="sub" style="white-space:normal;margin-top:1px">${o.it.map(i=>esc(i.subj.replace(/^M\d+\s*[:·]\s*/,''))).join(' · ')}</div></div>${doc?`<span class="pill" style="color:#34D27B;flex:none">${doc.kind==='cer'?'cerere':'adeverință'}</span>`:''}<b class="tnum" style="flex:none;color:var(--warn);font-size:14px">${o.it.length}</b></button>`}).join('')}</div></div>`}).join('');
   const head=sheetHead(`${plural(M.total,'absență','absențe')} · ${plural(M.students,'elev','elevi')}`,'De motivat');
   const intro=`<p class="muted" style="margin:0 0 10px;font-size:13px;line-height:1.5">Absențele din ultimele ${MOT_DAYS} zile pot fi motivate de diriginte; după aceea, doar administrația.${E?` Date din importul din ${fmtDs(E.date)}.`:''}</p>`;
@@ -1053,7 +1059,7 @@ function ecatDetail(sid){
 }
 function ecatTable(sid){
   const E=S.ecat;if(!E||!E.detail||!E.detail[sid])return '';const rows=E.detail[sid].filter(x=>x.a||x.g||x.n).sort((a,b)=>(b.n-a.n)||a.s.localeCompare(b.s,'ro'));
-  return `<div class="row between" style="margin-bottom:6px"><div class="sec" style="margin:0">Din catalogul electronic · ${fmtDs(E.date)}</div><div class="row" style="gap:12px;font-size:12px;color:var(--tx3)">${E.avg?.[sid]?`<span>media <b class="tnum" style="color:var(--tx);font-size:14px">${esc(E.avg[sid])}</b></span>`:''}${E.cond?.[sid]?`<span>purtare trecută <b class="tnum" style="color:var(--tx);font-size:14px">${esc(String(E.cond[sid]).split('/')[0])}</b></span>`:''}</div></div>
+  return `<div class="row between" style="margin-bottom:6px"><div class="sec" style="margin:0">Din catalogul electronic · ${fmtDs(E.date)}</div><div class="row" style="gap:12px;font-size:12px;color:var(--tx3)">${E.avg?.[sid]?`<span>media din catalog <b class="tnum" style="color:var(--tx);font-size:14px">${esc(E.avg[sid])}</b></span>`:''}${E.cond?.[sid]?`<span>purtare trecută <b class="tnum" style="color:var(--tx);font-size:14px">${esc(String(E.cond[sid]).split('/')[0])}</b></span>`:''}</div></div>
    <table><thead><tr><th>Materie</th><th>Note</th><th>Absențe (data)</th><th class="n">Nem.</th></tr></thead><tbody>${rows.map(x=>`<tr><td style="font-weight:500">${esc(x.s)}</td><td><span class="gchips">${(x.g||'').split(',').filter(Boolean).map(g=>{const v=parseInt(g);return `<span class="g ${v<5?'low':''}">${isNaN(v)?esc(g):v}</span>`}).join('')}</span></td><td style="color:var(--tx3);font-size:11.5px">${x.a?esc(fmtDots(x.a)):''}</td><td class="n" style="color:${x.n?'var(--warn)':'var(--tx4)'};font-weight:700">${x.n||'·'}</td></tr>`).join('')}</tbody></table>`;
 }
 function shDirStudent(id){
