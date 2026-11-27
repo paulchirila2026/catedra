@@ -470,9 +470,6 @@ html:not(.xl) .xlonly,.xlo{display:none}
 .fab,.round-fab{border-radius:16px}
 .round.me{border-radius:50%}
 
-.lsn{font-size:12.5px;color:var(--tx3);margin-top:2px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal;text-align:left}
-.lsb{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px;font-size:14px;line-height:1.5;color:var(--tx)}
-.lsb .lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--tx3);margin-bottom:4px;font-weight:700}
 </style>
 </head>
 <body>
@@ -485,7 +482,6 @@ html:not(.xl) .xlonly,.xlo{display:none}
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="upd" role="status"></div><div id="drop">Lasă fișierul aici pentru import</div>
 <div id="viewer" role="dialog" aria-modal="true" aria-label="Document"></div>
-<script src="plans.js"></script>
 <script>
 'use strict';
 /* ---------- utilitare ---------- */
@@ -621,17 +617,6 @@ function lessonsOn(d){
   return live('slots').filter(s=>s.day===dow(d)).map(s=>({...s,cls:byId('classes',s.classId),b:B[s.hour-1]}))
     .filter(s=>s.b&&(!s.cls||!s.cls.terminal||d<=TERMINAL_END)).sort((a,b)=>a.hour-b.hour);
 }
-function lessonFor(c,d){
-  try{
-  if(!c)return null;const pl=(window.PLANS||{})[cShort(c)];const L=pl&&pl[c.name];if(!L||!L.length)return null;
-  const W=schoolWeeks();const n=W.indexOf(monday(d))+1;if(!n)return null;
-  const pr=PRACT[c.name]||[];if(pr.includes(n))return{prac:true,n};
-  const pw=n-pr.filter(x=>x<n).length;
-  const e=L.filter(x=>pw>=x.a&&pw<=x.b);if(!e.length)return{none:true,pw,n};
-  return{pw,n,t:e.map(x=>x.t).filter(Boolean).join(' · ')||'Conținut nespecificat în planificare'}
-  }catch(err){return null}
-}
-function lessonLine(c,d){const z=lessonFor(c,d);if(!z)return'';if(z.prac)return'Săptămână de practică';if(z.none)return'';return`S${z.pw} · ${z.t}`}
 function eventsOn(d){return live('events').filter(e=>inR(d,e)).sort((a,b)=>a.start<b.start?-1:1)}
 
 /* ---------- catalog ---------- */
@@ -702,13 +687,17 @@ const AVATARS=[
  {n:'Cameră',k:'cam',g:['#C0A6FF','#7A52E6']},
  {n:'Cafea',k:'cof',g:['#D9A57A','#8A5430']},
  {n:'Joc',k:'game',g:['#9AA6FF','#4B3FD4']},
+ {n:'Profesor',k:'prof',g:['#9AA5B8','#4F596C']},
+ {n:'Portret (ilustrație)',k:'img',src:'data:image/jpeg;base64,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'},
 ];
-function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;const ini=esc(initials(S.settings.name||'?'));
+function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;
+  if(a.k==='img')return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true"><defs><clipPath id="c${id}"><circle cx="32" cy="32" r="32"/></clipPath></defs><g clip-path="url(#c${id})"><image href="${a.src}" width="64" height="64" preserveAspectRatio="xMidYMid slice"/></g></svg>`;const ini=esc(initials(S.settings.name||'?'));
   const glyph={sil:`<circle cx="32" cy="25" r="10.5" fill="#fff" fill-opacity=".92"/><path d="M12 56c2.5-11 10.5-16 20-16s17.5 5 20 16" fill="#fff" fill-opacity=".92"/>`,
    ini:`<text x="32" y="40.5" text-anchor="middle" font-family="-apple-system,Inter,system-ui,sans-serif" font-size="22" font-weight="600" fill="#fff" letter-spacing=".5">${ini}</text>`,
    cap:`<path d="M12 27l20-9 20 9-20 9z" fill="#fff"/><path d="M20 31v9c4 4 20 4 24 0v-9l-12 5z" fill="#fff" fill-opacity=".85"/><path d="M50 28v11" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>`,
    book:`<path d="M16 20c6-2 11-1 16 3v24c-5-4-10-5-16-3z" fill="#fff"/><path d="M48 20c-6-2-11-1-16 3v24c5-4 10-5 16-3z" fill="#fff" fill-opacity=".8"/>`,
    lap:`<rect x="17" y="20" width="30" height="20" rx="3" fill="#fff"/><rect x="20.5" y="23.5" width="23" height="13" rx="1.5" fill="url(#${id})" opacity=".55"/><path d="M12 43h40l-3 4H15z" fill="#fff" fill-opacity=".85"/>`,
+   prof:`<g transform="translate(32 36) scale(1.28) translate(-32 -36)"><path d="M5 64c1-13 9-19 19-21l8 8 8-8c10 2 18 8 19 21z" fill="#2F3542"/><path d="M24 43l8 15 8-15-8 4z" fill="#EEF2F7"/><path d="M24 43l4 21M40 43l-4 21" stroke="#1B2029" stroke-width="1.4" stroke-linecap="round"/><rect x="28" y="36" width="8" height="10" rx="3" fill="#E2AE88"/><ellipse cx="32" cy="26.5" rx="10.5" ry="12.5" fill="#F2CBA8"/><path d="M22.200 20.500c0-6.500 4.200-10.500 9.800-10.500s9.800 4 9.800 10.500c-2-3.200-5-4.600-9.800-4.600s-7.800 1.400-9.800 4.600z" fill="#3A4050"/><rect x="21.800" y="22.800" width="9.200" height="5.800" rx="2.200" fill="#12151B"/><rect x="33" y="22.800" width="9.200" height="5.800" rx="2.200" fill="#12151B"/><path d="M31 24.300h2" stroke="#12151B" stroke-width="1.400"/><path d="M21.800 28.500c.6 9.500 4.600 14.500 10.200 14.500s9.600-5 10.200-14.500c-2 2.800-4 3.800-6.200 3.800h-8c-2.200 0-4.200-1-6.200-3.800z" fill="#4D5465"/><path d="M28.500 34.200q3.500 2.500 7 0" stroke="#fff" stroke-width="1.700" stroke-linecap="round" fill="none"/></g>`,
    code:`<path d="M24 22l-11 10 11 10M40 22l11 10-11 10M35 17l-6 30" stroke="#fff" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
    rocket:`<path d="M32 9c8 6 11 17 9 29H23c-2-12 1-23 9-29z" fill="#fff"/><circle cx="32" cy="26" r="4.2" fill="url(#${id})" opacity=".7"/><path d="M23 36l-8 9 9-2zM41 36l8 9-9-2z" fill="#fff" fill-opacity=".8"/><path d="M28 42h8l-4 11z" fill="#fff" fill-opacity=".7"/>`,
    star:`<path d="M32 11l6.4 13.2 14.4 1.9-10.6 10 2.7 14.3L32 43.4 19.1 50.4l2.7-14.3-10.6-10 14.4-1.9z" fill="#fff"/>`,
@@ -725,7 +714,7 @@ function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;con
 const meBadge=()=>S.settings.avatar!=null&&AVATARS[S.settings.avatar]?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='4.6';
+const APP_VER='4.7';
 const NEWS=['Foile se închid trăgând în jos','Toate orele din ceas funcționează','Butonul + Ședință repornit','Nemotivatele pe primul loc','Absențe cu adeverință și cu cerere (maximum 40) la fiecare elev','Ceas cu toate orele, și seara','Note mai mari, clasele pe tot rândul'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
@@ -838,7 +827,7 @@ function vAzi(){
   let sched='';
   if(L.length)sched=`<div><div class="sec">Programul de azi</div><div class="list sched">`+L.map(l=>{const st=now>=l.b.e?'done':now>=l.b.s?'now':'';const c=l.cls;
     return `<button class="li ${st}" data-a="slot" data-d="${l.day}" data-h="${l.hour}"><div class="t tnum">${fmtT(l.b.s)}</div><div class="cb" style="background:${c?c.color:'var(--tx4)'}"></div>
-     <div class="grow" style="min-width:0"><div class="nm" style="font-weight:600">${esc(subjOf(l))} <span class="muted" style="font-weight:400">${c&&!l.subject?esc(c.subject.replace(/^M\d+\s*·\s*/,'')):''}</span></div>${(()=>{const t=lessonLine(c,d);return t?`<div class="lsn">${esc(t)}</div>`:''})()}</div>${c?`<span class="pill">${esc(c.name)}</span>`:''}${st==='done'?`<span class="dim">${ic('check',16,2.6)}</span>`:''}</button>`}).join('')+`</div></div>`;
+     <div class="grow nm" style="font-weight:600">${esc(subjOf(l))} <span class="muted" style="font-weight:400">${c&&!l.subject?esc(c.subject.replace(/^M\d+\s*·\s*/,'')):''}</span></div>${c?`<span class="pill">${esc(c.name)}</span>`:''}${st==='done'?`<span class="dim">${ic('check',16,2.6)}</span>`:''}</button>`}).join('')+`</div></div>`;
   const lim=addDays(d,120);const up=[...live('events').filter(e=>(e.end||e.start)>=d&&e.start<=lim).map(e=>({k:e.start+(e.time||''),h:evRow(e,d)})),
     ...periods().filter(p=>p.kind!=='module'?(p.end||p.start)>=d:p.start>d).filter(p=>p.start<=lim).map(p=>({k:p.start+(p.kind==='module'?' 1':' 0'),h:perRow(p,d)}))].sort((a,b)=>a.k<b.k?-1:1).slice(0,5);
   const evs=`<div><div class="row between"><div class="sec">Urmează</div><button class="btn sm" data-a="eventEdit" data-date="${d}" style="height:32px;color:var(--ac)">${ic('plus',16)} Activitate</button></div>
@@ -1365,10 +1354,6 @@ let SLOT=null;
 function shSlot(){
   const {d,h}=SLOT;const s=live('slots').find(x=>x.day===d&&x.hour===h);const b=bells()[h-1];const cs=live('classes');
   return sheetHead(`${ZILE[d]} · ora ${h} · ${b?fmtT(b.s)+'–'+fmtT(b.e):''}`,s?'Editează ora':'Oră nouă')+
-  (()=>{const c=s&&byId('classes',s.classId);const dd=addDays(monday(today()),d-1);const z=c?lessonFor(c,dd):null;
-    if(!z)return'';
-    const body=z.prac?'Săptămână de practică pentru această clasă.':z.none?'Nu există lecție planificată pentru această săptămână.':esc(z.t);
-    return `<div class="lsb"><div class="lbl">${z.pw?`Lecția săptămânii · S${z.pw}`:'Planificare'}</div><div>${body}</div></div>`})()+
   `<form data-f="slot" class="stack"><div class="fld"><label for="sc">Clasa</label><select id="sc" name="classId" class="in">${cs.map(c=>`<option value="${c.id}" ${s?.classId===c.id?'selected':''}>${cLab(c)}</option>`).join('')}<option value="" ${s&&!s.classId?'selected':''}>Altă activitate</option></select></div>
   <div class="fld"><label for="ssu">Disciplina (opțional)</label><input id="ssu" name="subject" class="in" value="${esc(s?.subject||'')}" placeholder="implicit: disciplina clasei"></div>
   <div class="fld"><label for="sro">Sala</label><input id="sro" name="room" class="in" value="${esc(s?.room||'')}" placeholder="Laborator 2"></div>
