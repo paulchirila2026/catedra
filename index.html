@@ -415,8 +415,10 @@ html:not(.xl) .xlonly,.xlo{display:none}
 .wsh{display:block}
 .wsh .wg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:start}
 .wsh.m .wg{grid-template-columns:repeat(2,minmax(0,1fr))}
-.wsh.t .wg{grid-template-columns:minmax(0,1fr) minmax(0,1.35fr)}
-.dcol{columns:2;column-gap:14px}.dcol .li{break-inside:avoid}
+.wsh.t .wg{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px}
+.wsh.t .wg>div:first-child{position:sticky;top:0;align-self:start}
+.dc.dbig .dcl{display:grid;grid-template-columns:1fr 1fr;column-gap:24px}
+.dcol{columns:1}.dcol .li{break-inside:avoid}
 .dc{border:1px solid var(--line);border-radius:14px;background:var(--card);margin:0 0 12px;overflow:hidden;break-inside:avoid}
 .dch{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 14px;background:var(--card3)}
 .dcd{display:flex;align-items:baseline;gap:8px}.dcd b{font-size:16px}.dcd span{font-size:13px;color:var(--tx3)}
@@ -466,6 +468,7 @@ html:not(.xl) .xlonly,.xlo{display:none}
 .card,.card.hero,.stat,.stats2 .stat,.stats3 .stat,.statl,.seg,.dc,.cchip,.tile,.ttg .c,.dctr,.nowc,.mcal,#toast,#upd,.toggle{border-radius:14px}
 .seg{padding:4px}.ck span{border-radius:10px}
 .fab,.round-fab{border-radius:16px}
+.round.me{border-radius:50%}
 </style>
 </head>
 <body>
@@ -671,18 +674,42 @@ const AVATARS=[
  {n:'Absolvent',k:'cap',g:['#FFD25E','#E59A12']},
  {n:'Carte',k:'book',g:['#52D5E8','#1789B8']},
  {n:'Laptop',k:'lap',g:['#B49BFF','#6E4BDB']},
+ {n:'Cod',k:'code',g:['#4FE0C2','#118A7A']},
+ {n:'Rachetă',k:'rocket',g:['#FF8A6B','#D9402A']},
+ {n:'Stea',k:'star',g:['#FFE066','#F2A20C']},
+ {n:'Idee',k:'bulb',g:['#FFC86B','#E8741C']},
+ {n:'Procesor',k:'chip',g:['#6FA8FF','#2E54D6']},
+ {n:'Scut',k:'shield',g:['#58E2A7','#16895A']},
+ {n:'Rețea',k:'wifi',g:['#7CE0FF','#1C8FD1']},
+ {n:'Muzică',k:'note',g:['#FF9AD0','#B93A9A']},
+ {n:'Glob',k:'globe',g:['#6BD8F0','#2368C8']},
+ {n:'Cameră',k:'cam',g:['#C0A6FF','#7A52E6']},
+ {n:'Cafea',k:'cof',g:['#D9A57A','#8A5430']},
+ {n:'Joc',k:'game',g:['#9AA6FF','#4B3FD4']},
 ];
 function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;const ini=esc(initials(S.settings.name||'?'));
   const glyph={sil:`<circle cx="32" cy="25" r="10.5" fill="#fff" fill-opacity=".92"/><path d="M12 56c2.5-11 10.5-16 20-16s17.5 5 20 16" fill="#fff" fill-opacity=".92"/>`,
    ini:`<text x="32" y="40.5" text-anchor="middle" font-family="-apple-system,Inter,system-ui,sans-serif" font-size="22" font-weight="600" fill="#fff" letter-spacing=".5">${ini}</text>`,
    cap:`<path d="M12 27l20-9 20 9-20 9z" fill="#fff"/><path d="M20 31v9c4 4 20 4 24 0v-9l-12 5z" fill="#fff" fill-opacity=".85"/><path d="M50 28v11" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>`,
    book:`<path d="M16 20c6-2 11-1 16 3v24c-5-4-10-5-16-3z" fill="#fff"/><path d="M48 20c-6-2-11-1-16 3v24c5-4 10-5 16-3z" fill="#fff" fill-opacity=".8"/>`,
-   lap:`<rect x="17" y="20" width="30" height="20" rx="3" fill="#fff"/><rect x="20.5" y="23.5" width="23" height="13" rx="1.5" fill="url(#${id})" opacity=".55"/><path d="M12 43h40l-3 4H15z" fill="#fff" fill-opacity=".85"/>`}[a.k];
+   lap:`<rect x="17" y="20" width="30" height="20" rx="3" fill="#fff"/><rect x="20.5" y="23.5" width="23" height="13" rx="1.5" fill="url(#${id})" opacity=".55"/><path d="M12 43h40l-3 4H15z" fill="#fff" fill-opacity=".85"/>`,
+   code:`<path d="M24 22l-11 10 11 10M40 22l11 10-11 10M35 17l-6 30" stroke="#fff" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
+   rocket:`<path d="M32 9c8 6 11 17 9 29H23c-2-12 1-23 9-29z" fill="#fff"/><circle cx="32" cy="26" r="4.2" fill="url(#${id})" opacity=".7"/><path d="M23 36l-8 9 9-2zM41 36l8 9-9-2z" fill="#fff" fill-opacity=".8"/><path d="M28 42h8l-4 11z" fill="#fff" fill-opacity=".7"/>`,
+   star:`<path d="M32 11l6.4 13.2 14.4 1.9-10.6 10 2.7 14.3L32 43.4 19.1 50.4l2.7-14.3-10.6-10 14.4-1.9z" fill="#fff"/>`,
+   bulb:`<path d="M32 11a14 14 0 0 0-8 25.6V42h16v-5.4A14 14 0 0 0 32 11z" fill="#fff"/><rect x="25" y="45" width="14" height="3.6" rx="1.8" fill="#fff" fill-opacity=".85"/><rect x="28" y="50" width="8" height="3" rx="1.5" fill="#fff" fill-opacity=".7"/>`,
+   chip:`<rect x="20" y="20" width="24" height="24" rx="4.5" fill="#fff"/><rect x="26" y="26" width="12" height="12" rx="2.5" fill="url(#${id})" opacity=".6"/><path d="M26 13v7M32 13v7M38 13v7M26 44v7M32 44v7M38 44v7M13 26h7M13 32h7M13 38h7M44 26h7M44 32h7M44 38h7" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>`,
+   shield:`<path d="M32 10l17 6.5V30c0 11.5-7.2 19.6-17 24-9.8-4.4-17-12.5-17-24V16.5z" fill="#fff"/><path d="M24.5 31.5l5.5 5.5 10-11.5" stroke="url(#${id})" stroke-width="4.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
+   wifi:`<path d="M11 26c12-11 30-11 42 0M18.5 33.5c8-7 19-7 27 0M26 41c3.5-3 8.5-3 12 0" stroke="#fff" stroke-width="4.2" fill="none" stroke-linecap="round"/><circle cx="32" cy="49" r="3.4" fill="#fff"/>`,
+   note:`<path d="M26 44V19l21-4.5v25" stroke="#fff" stroke-width="3.6" fill="none" stroke-linejoin="round"/><circle cx="21.5" cy="44" r="6.2" fill="#fff"/><circle cx="42.5" cy="40" r="6.2" fill="#fff"/>`,
+   globe:`<circle cx="32" cy="32" r="19" fill="none" stroke="#fff" stroke-width="3.6"/><ellipse cx="32" cy="32" rx="8.5" ry="19" fill="none" stroke="#fff" stroke-width="3.2"/><path d="M13 32h38" stroke="#fff" stroke-width="3.2"/>`,
+   cam:`<rect x="11" y="22" width="42" height="27" rx="6" fill="#fff"/><path d="M23 22l3-5.5h12l3 5.5z" fill="#fff"/><circle cx="32" cy="35.5" r="8.5" fill="url(#${id})" opacity=".65"/>`,
+   cof:`<path d="M15 27h27v11a11 11 0 0 1-11 11h-5a11 11 0 0 1-11-11z" fill="#fff"/><path d="M42 30h4.5a5.5 5.5 0 0 1 0 11H42" stroke="#fff" stroke-width="3.6" fill="none"/><path d="M23 13c-2.5 3.5 2.5 5.5 0 9M31 13c-2.5 3.5 2.5 5.5 0 9" stroke="#fff" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-opacity=".8"/>`,
+   game:`<rect x="9" y="21" width="46" height="24" rx="12" fill="#fff"/><path d="M22 28v11M16.5 33.5h11" stroke="url(#${id})" stroke-width="3.6" stroke-linecap="round"/><circle cx="41" cy="31" r="2.8" fill="url(#${id})"/><circle cx="47" cy="37" r="2.8" fill="url(#${id})"/>`}[a.k];
   return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a.g[0]}"/><stop offset="1" stop-color="${a.g[1]}"/></linearGradient><clipPath id="c${id}"><circle cx="32" cy="32" r="32"/></clipPath></defs><g clip-path="url(#c${id})"><rect width="64" height="64" fill="url(#${id})"/><g transform="translate(32 33) scale(.76) translate(-32 -32)">${glyph}</g></g></svg>`}
 const meBadge=()=>S.settings.avatar!=null&&AVATARS[S.settings.avatar]?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='4.4';
+const APP_VER='4.5';
 const NEWS=['Foile se închid trăgând în jos','Toate orele din ceas funcționează','Butonul + Ședință repornit','Nemotivatele pe primul loc','Absențe cu adeverință și cu cerere (maximum 40) la fiecare elev','Ceas cu toate orele, și seara','Note mai mari, clasele pe tot rândul'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
@@ -978,7 +1005,7 @@ function shMot(){
     return `<button class="nmc" data-a="dirStudent" data-id="${o.s.id}"><span>${esc(XL?o.s.name:o.s.name.split(' ').slice(0,2).map((w,i)=>i?w[0]+'.':w).join(' '))}</span></button>${days.map(x=>{const it=cnt[x]||[];const dd=it.length&&it.every(i=>i.doc);return `<div class="c ${dow(x)>5?'we':''} ${dd?'dd':''}">${it.length?`<i>${it.length}</i>`:''}</div>`}).join('')}<div class="lf" style="color:${l<=1?'var(--warn)':'var(--tx3)'}">${lf(l)}</div>`}).join('')}</div>
    <div class="sub" style="margin-top:8px;line-height:1.5">„Expiră” = în câte zile nu mai poți motiva tu absențele. Sunt afișate doar absențele nemotivate, fără document.</div>`;
   const dl=Object.keys(by).sort().reverse().map(dt=>{const L=by[dt];const g={};L.forEach(x=>{(g[x.s.id]=g[x.s.id]||{s:x.s,it:[]}).it.push(x.i)});const gs=Object.values(g).sort((a,b)=>a.s.name.localeCompare(b.s.name,'ro'));
-    return `<div class="dc ${dt===d0?'td':''}"><div class="dch"><div class="dcd"><b>${ZILE[dow(dt)]}</b><span>${parse(dt).getDate()} ${LUNI[parse(dt).getMonth()]}${dt===d0?' · azi':''}</span></div><span class="dcm">${plural(gs.length,'elev','elevi')} · ${L.length} abs.</span></div>
+    return `<div class="dc ${dt===d0?'td':''} ${gs.length>4?'dbig':''}"><div class="dch"><div class="dcd"><b>${ZILE[dow(dt)]}</b><span>${parse(dt).getDate()} ${LUNI[parse(dt).getMonth()]}${dt===d0?' · azi':''}</span></div><span class="dcm">${plural(gs.length,'elev','elevi')} · ${L.length} abs.</span></div>
     <div class="list dcl">${gs.map(o=>{const doc=o.it.find(i=>i.doc)?.doc;return `<button class="li nb" data-a="dirStudent" data-id="${o.s.id}" style="min-height:44px;padding:6px 0;align-items:flex-start"><div class="grow" style="min-width:0"><div class="nm">${esc(o.s.name)}</div><div class="sub" style="white-space:normal;margin-top:1px">${o.it.map(i=>esc(i.subj.replace(/^M\d+\s*[:·]\s*/,''))).join(' · ')}</div></div>${doc?`<span class="pill" style="color:#34D27B;flex:none">${doc.kind==='cer'?'cerere':'adeverință'}</span>`:''}<b class="tnum" style="flex:none;color:var(--warn);font-size:14px">${o.it.length}</b></button>`}).join('')}</div></div>`}).join('');
   const head=sheetHead(`${plural(M.total,'absență','absențe')} · ${plural(M.students,'elev','elevi')}`,'De motivat');
   const intro=`<p class="muted" style="margin:0 0 10px;font-size:13px;line-height:1.5">Absențele din ultimele ${MOT_DAYS} zile pot fi motivate de diriginte; după aceea, doar administrația.${E?` Date din importul din ${fmtDs(E.date)}.`:''}</p>`;
