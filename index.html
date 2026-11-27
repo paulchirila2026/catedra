@@ -441,7 +441,7 @@ html:not(.xl) .xlonly,.xlo{display:none}
 .mx .nmc span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mx .lf{display:flex;align-items:center;justify-content:flex-end;height:34px;border-top:1px solid var(--line);font-size:11px;font-weight:700;white-space:nowrap;padding-left:6px}
 /* year calendar */
-:root{--ysc:rgba(255,255,255,.07);--yfr:rgba(255,150,40,.17)}
+:root{--ysc:rgba(255,255,255,.09);--yfr:rgba(255,150,40,.045)}
 .yr{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 22px}
 .ym .yt{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tx2);margin:0 0 3px;display:flex;justify-content:space-between}
 .ym .yh,.ym .yg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
@@ -450,8 +450,8 @@ html:not(.xl) .xlonly,.xlo{display:none}
 .yd.o{visibility:hidden}.yd.we{color:var(--tx4)}
 .yd .dn{width:26px;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;position:relative}
 .yd.sc{background:var(--ysc)}
-.yd.fr{background:var(--yfr);color:#ffc183}
-.yd.we{color:#ffc183}
+.yd.fr{background:var(--yfr);color:#7d6f62}
+.yd.we{color:#7d6f62}
 .yd.sel{box-shadow:inset 0 0 0 1.5px var(--tx)}
 .yd.today,.yd.today.fr{background:var(--ac);color:var(--onac);font-weight:700}
 .yd.today .dn{background:none;box-shadow:none}
@@ -716,7 +716,7 @@ function avatarSvg(i,size=40){const a=AVATARS[i]||AVATARS[0];const id='ag'+i;
 const meBadge=()=>S.settings.avatar!=null&&AVATARS[S.settings.avatar]?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='5.1';
+const APP_VER='5.2';
 const NEWS=['Foile se închid trăgând în jos','Toate orele din ceas funcționează','Butonul + Ședință repornit','Nemotivatele pe primul loc','Absențe cu adeverință și cu cerere (maximum 40) la fiecare elev','Ceas cu toate orele, și seara','Note mai mari, clasele pe tot rândul'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
