@@ -165,7 +165,7 @@ nav .brand{display:none}
 #sheet.open{pointer-events:auto}
 .sbg{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;transition:opacity .25s}
 #sheet.open .sbg{opacity:1}
-.sheet{position:absolute;left:0;right:0;bottom:0;max-height:min(94dvh,calc(var(--H) * .94));overflow:auto;background:var(--card);border-radius:28px 28px 0 0;padding:10px 20px calc(var(--sb) + 24px);transform:translateY(100%);transition:transform .34s cubic-bezier(.2,.9,.2,1);border-top:1px solid var(--line2)}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:min(94dvh,calc(var(--H) * .94));overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;overflow-wrap:anywhere;background:var(--card);border-radius:28px 28px 0 0;padding:10px 20px calc(var(--sb) + 24px);transform:translateY(100%);transition:transform .34s cubic-bezier(.2,.9,.2,1);border-top:1px solid var(--line2)}
 #sheet.open .sheet{transform:none}
 .grab{width:40px;height:5px;border-radius:3px;background:var(--card3);margin:0 auto 14px}
 .sheet h2{margin:0;font-family:var(--serif);font-weight:400;font-size:30px;line-height:1.1}
@@ -761,8 +761,8 @@ const avOk=i=>AVATARS[i]&&!(AVATARS[i].k==='img'&&!AVATARS[i].src);
 const meBadge=()=>S.settings.avatar!=null&&avOk(S.settings.avatar)?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='5.13';
-const NEWS=['Prima pagină: ultimul import stă jos, lipit de margine','Diriginție: comutator Absențe / Note, cu toate disciplinele în stânga','Icon nou'];
+const APP_VER='5.14';
+const NEWS=['Fișa elevului: conținutul nu se mai mișcă pe lateral','Prima pagină: ultimul import stă jos, lipit de margine','Diriginție: comutator Absențe / Note, cu toate disciplinele în stânga','Icon nou'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
 
