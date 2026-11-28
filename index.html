@@ -503,7 +503,7 @@ html:not(.xl) .xlonly,.xlo{display:none}
 [data-theme=light] .cd .dots i.vb,[data-theme=light] .mlg i.vb{background:rgba(10,12,20,.18)}
 .dsel{height:34px;padding:0 30px 0 12px;font-size:13px;width:auto;max-width:230px;border-radius:10px}
 .srw{align-items:stretch}.srw>.stat{flex:1 1 0;min-width:0;min-height:108px;display:flex;flex-direction:column;justify-content:center}.xl .srw>.stat{min-height:118px}
-.impl{display:block;margin:22px auto 6px;background:none;border:0;padding:4px 8px;font-size:12px;color:var(--tx4);text-align:center;cursor:pointer}.impl:hover{color:var(--tx3)}
+.azp{display:flex;flex-direction:column;min-height:100%}.azp>.view,.azp>div{flex:1 0 auto;display:flex;flex-direction:column}.azp>div>*{flex-shrink:0}.azp .impl{margin-top:auto;padding-top:22px}.impl{display:block;margin:22px auto 6px;background:none;border:0;padding:4px 8px;font-size:12px;color:var(--tx4);text-align:center;cursor:pointer}.impl:hover{color:var(--tx3)}
 
 .segc button{font-size:15px}.xl .segc button{height:34px;font-size:14px}
 [data-theme=light] .seg{background:#E3E5E9;border-color:transparent}
@@ -703,7 +703,7 @@ function renderNav(){
 }
 function render(anim){
   renderNav();const v=$('#view');
-  v.innerHTML=`<div class="${anim?'view':''}">${VIEWS[ui.tab]()}</div>`;const fs=$('#fabs');fs.innerHTML='';v.querySelectorAll('.fab').forEach(b=>fs.appendChild(b));hydrate();
+  v.className='wrap'+(ui.tab==='azi'?' azp':'');v.innerHTML=`<div class="${anim?'view':''}">${VIEWS[ui.tab]()}</div>`;const fs=$('#fabs');fs.innerHTML='';v.querySelectorAll('.fab').forEach(b=>fs.appendChild(b));hydrate();
 }
 function rerenderSheet(){if(sheetFn&&$('#sheet').classList.contains('open')){const sc=$('.sheet')?.scrollTop||0;$('.sheet').innerHTML='<div class="grab"></div>'+sheetFn();$('.sheet').scrollTop=sc;hydrate()}}
 function refresh(){render(false);rerenderSheet()}
@@ -761,8 +761,8 @@ const avOk=i=>AVATARS[i]&&!(AVATARS[i].k==='img'&&!AVATARS[i].src);
 const meBadge=()=>S.settings.avatar!=null&&avOk(S.settings.avatar)?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='5.12';
-const NEWS=['Diriginție: comutator Absențe / Note, cu toate disciplinele în stânga','Icon nou'];
+const APP_VER='5.13';
+const NEWS=['Prima pagină: ultimul import stă jos, lipit de margine','Diriginție: comutator Absențe / Note, cu toate disciplinele în stânga','Icon nou'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
 
