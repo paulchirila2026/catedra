@@ -25,8 +25,8 @@
   --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);--z:1;--H:var(--fullh,100vh);
 }
 [data-theme=light]{
-  --bg:#F3F3F6;--card:#FFFFFF;--card2:#F0F1F4;--card3:#E3E5EA;--line:rgba(10,12,20,.07);--line2:rgba(10,12,20,.12);
-  --tx:#111318;--tx2:#33373F;--tx3:#5C626D;--tx4:#80868F;--bad:#C83A3A;--ok:#1E8A4E;--nav:rgba(255,255,255,.86);--shadow:0 18px 50px rgba(20,24,40,.16);--warn:#B85A00;
+  --bg:#EDEEF1;--card:#FFFFFF;--card2:#F5F6F8;--card3:#E4E6EA;--line:rgba(10,12,20,.09);--line2:rgba(10,12,20,.16);
+  --tx:#111318;--tx2:#2B2F36;--tx3:#4E545E;--tx4:#6B717B;--bad:#C83A3A;--ok:#1E8A4E;--nav:rgba(255,255,255,.86);--shadow:0 18px 50px rgba(20,24,40,.16);--warn:#B85A00;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{height:100%;height:-webkit-fill-available}
@@ -501,6 +501,18 @@ html:not(.xl) .xlonly,.xlo{display:none}
 [data-theme=light] .mini.ab,[data-theme=light] .nempill{background:rgba(200,110,0,.12)!important}
 [data-theme=light] .motc{background:rgba(200,110,0,.07)!important;border-color:rgba(200,110,0,.3)!important}
 [data-theme=light] .cd .dots i.vb,[data-theme=light] .mlg i.vb{background:rgba(10,12,20,.18)}
+.dsel{height:34px;padding:0 30px 0 12px;font-size:13px;width:auto;max-width:230px;border-radius:10px}
+.srw{align-items:stretch}.srw>.stat{flex:1 1 0;min-width:0;min-height:108px;display:flex;flex-direction:column;justify-content:center}.xl .srw>.stat{min-height:118px}
+.impl{display:block;margin:22px auto 6px;background:none;border:0;padding:4px 8px;font-size:12px;color:var(--tx4);text-align:center;cursor:pointer}.impl:hover{color:var(--tx3)}
+
+.segc button{font-size:15px}.xl .segc button{height:34px;font-size:14px}
+[data-theme=light] .seg{background:#E3E5E9;border-color:transparent}
+[data-theme=light] .seg button{color:#4E545E}
+[data-theme=light] .seg button.on{background:#FFFFFF;color:var(--tx);box-shadow:0 1px 3px rgba(10,12,20,.14),0 0 0 1px rgba(10,12,20,.05)}
+[data-theme=light] .statl,[data-theme=light] .card,[data-theme=light] .stat{border-color:rgba(10,12,20,.10)}
+[data-theme=light] .round,[data-theme=light] .btn:not(.pri),[data-theme=light] .pm{background:#FFFFFF;border-color:rgba(10,12,20,.16)}
+[data-theme=light] .g{background:#E7E9ED;color:#2B2F36}
+html:not(.xl) .dctl{width:100%}html:not(.xl) .dctl .dsel{flex:1 1 0;min-width:0;max-width:none}.dctl .seg{flex:none}
 </style>
 </head>
 <body>
@@ -745,8 +757,8 @@ const avOk=i=>AVATARS[i]&&!(AVATARS[i].k==='img'&&!AVATARS[i].src);
 const meBadge=()=>S.settings.avatar!=null&&avOk(S.settings.avatar)?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='5.8';
-const NEWS=['Tema luminoasă reparată (Setări → Aspect)','Culorile claselor lizibile pe fundal deschis'];
+const APP_VER='5.9';
+const NEWS=['Diriginție: alegi o disciplină și vezi notele și absențele tuturor elevilor','Disciplinele din fișa elevului în ordine fixă','Data ultimului import jos pe Azi','Contrast mai bun în tema luminoasă'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
 
@@ -875,8 +887,10 @@ function vAzi(){
     const wb=noteCard();
     idle=`<div class="${L.length?'xlo':''}">${wk}</div>${wb}`;
   }
-  return out+`<div class="az" style="margin-top:14px"><div class="stack c1" style="gap:12px">${now1}${stats}${nudge}</div><div class="stack c2">${sched}${evs}</div>${idle?`<div class="stack c3">${idle}</div>`:''}</div>`;
+  return out+`<div class="az" style="margin-top:14px"><div class="stack c1" style="gap:12px">${now1}${stats}${nudge}</div><div class="stack c2">${sched}${evs}</div>${idle?`<div class="stack c3">${idle}</div>`:''}</div>${impLine()}`;
 }
+function impLine(){const E=S.ecat;if(!E||!E.date)return '';const n=diffDays(E.date,today());const rel=n<=0?'azi':n===1?'acum o zi':`acum ${n} zile`;
+  return `<button class="impl" data-a="impOpen" style="${n>7?'color:var(--warn)':''}">Ultimul import din catalogul electronic: ${fmtD(E.date)} · ${rel}${n>7?' · actualizează':''}</button>`}
 function nextDayLine(d,short){
   for(let i=1;i<40;i++){const x=addDays(d,i);const L=lessonsOn(x);if(L.length){const l=L[0];const when=i===1?'Mâine':`${ZILE[dow(x)]}, ${fmtD(x)}`;
     return `${when}: prima oră la ${fmtT(l.b.s)} · ${esc(subjOf(l))}${l.cls?' '+esc(l.cls.name):''}`}}
@@ -952,9 +966,9 @@ function vCat(){
      <button class="pm minus" data-a="pt" data-id="${r.s.id}" data-k="-" aria-label="Minus pentru ${esc(r.s.name)}">−</button><button class="pm plus" data-a="pt" data-id="${r.s.id}" data-k="+" aria-label="Plus pentru ${esc(r.s.name)}">+</button></div></div>`).join('')}</div>`
    :`<div class="card empty"><p>Clasa nu are încă elevi.</p><button class="btn pri" data-a="classEdit" data-id="${c.id}">${ic('plus',20)} Adaugă elevi</button></div>`;
   return hdr('','Catalog',`<button class="round" data-a="classEdit" data-id="${c.id}" aria-label="Editează clasa">${ic('edit',20)}</button>`)+
-   `<div class="stack" style="margin-top:12px;gap:10px"><div class="chips fill">${[...new Set(cs.map(x=>x.name))].map(n=>`<button class="chip ${n===c.name?'on':''}" data-a="clsName" data-n="${esc(n)}" style="font-size:15px;height:40px">${esc(n)}</button>`).join('')}</div>
-   <div class="seg" style="grid-auto-columns:minmax(0,1fr)">${cs.filter(x=>x.name===c.name).map(x=>`<button class="${x.id===c.id?'on':''}" data-a="cls" data-id="${x.id}">${esc(cShort(x))}</button>`).join('')}</div>
-   <div class="statl"><span>Media <b style="color:var(--ac);font-size:15px">${cav!==null?n2(cav):'—'}</b></span><span><b>${st.length}</b> elevi</span><span><b style="color:var(--warn)">${low}</b> sub 5</span><span><b>${totA}</b> absențe</span></div>
+   `<div class="stack" style="margin-top:12px;gap:10px"><div class="seg segc">${[...new Set(cs.map(x=>x.name))].map(n=>`<button class="${n===c.name?'on':''}" data-a="clsName" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div>
+   ${cs.filter(x=>x.name===c.name).length>1?`<div class="seg">${cs.filter(x=>x.name===c.name).map(x=>`<button class="${x.id===c.id?'on':''}" data-a="cls" data-id="${x.id}">${esc(cShort(x))}</button>`).join('')}</div>`:''}
+   <div class="statl">${cs.filter(x=>x.name===c.name).length>1?'':`<span><b>${esc(cShort(c))}</b></span>`}<span>Media <b style="color:var(--ac);font-size:15px">${cav!==null?n2(cav):'—'}</b></span><span><b>${st.length}</b> elevi</span><span><b style="color:var(--warn)">${low}</b> sub 5</span><span><b>${totA}</b> absențe</span></div>
    ${st.length?`<div class="dim" style="font-size:12px;margin-top:-4px">${hintOn('cat')?'Glisează pe elev: spre dreapta = notă · spre stânga = absent azi · ':''}− / + = puncte de activitate</div>`:''}
    ${list}</div>`;
 }
@@ -1059,13 +1073,18 @@ function docRow(d,showName=true){
     <div class="grow"><div class="nm">${showName?esc(s?.name||'Elev șters'):t[0]}</div><div class="sub">${showName?t[0]+' · ':''}${d.from?fmtR(d.from,d.to):'fără perioadă'}${nd?` · ${plural(nd,'zi de curs','zile de curs')}`:''}</div></div></button>
     <button class="stchip ${d.inCatalog?'ok':''}" data-a="docToggle" data-id="${d.id}" aria-pressed="${!!d.inCatalog}">${d.inCatalog?ic('check',14,3)+' Trecută':'Am trecut-o'}</button></div>`;
 }
+function subjRow(r){const x=r.sx;
+  return `<div class="sub" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">${x.gs.length?`<span class="gchips">${x.gs.map(v=>`<span class="g ${v<5?'low':''}" style="height:19px;min-width:20px;font-size:12px;padding:0 5px">${v}</span>`).join('')}</span>`:'<span>fără note</span>'}<span>${x.t?`<span style="color:${x.n?'var(--warn)':'inherit'};font-weight:600">${x.n} nem.</span> din ${x.t}`:'fără absențe'}</span></div></div>
+   <div class="tnum" style="font-size:18px;font-weight:600;width:44px;text-align:right;color:${x.av===null?'var(--tx4)':x.av<5?'var(--bad)':x.av<6?'var(--warn)':'var(--tx)'}">${x.av===null?'—':n2(x.av)}</div>`}
 function vDir(){
   const hc=homeroom();const cs=live('classes').sort((a,b)=>a.name.localeCompare(b.name,'ro',{numeric:true}));
   if(!hc)return hdr('Clasa mea','Diriginție')+`<div class="card empty" style="margin-top:16px"><p>${cs.length?'Alege clasa la care ești diriginte.':'Adaugă mai întâi clasa la care ești diriginte.'}</p>
     <div class="row" style="flex-wrap:wrap;justify-content:center">${[...new Set(cs.map(c=>c.name))].map(n=>{const c=cs.find(x=>x.name===n);return `<button class="chip" data-a="setHome" data-id="${c.id}"><span class="dot" style="background:${c.color}"></span>${esc(n)}</button>`}).join('')}</div>${cs.length?'':`<button class="btn pri" data-a="classEdit">${ic('plus',20)} Adaugă o clasă</button>`}</div>`;
   const E=S.ecat;const st=studentsOf(hc.id);const d=today();
   let rows=st.map(s=>{const e=ecatOf(s.id)||{t:0,n:0,m:0};const docs=live('docs').filter(x=>x.studentId===s.id);return{s,e,docs,cov:docCover(s.id),pend:docs.filter(x=>!x.inCatalog).length,cd:conductOf(s)}});
-  if(ui.dsort==='abs')rows.sort((a,b)=>b.e.n-a.e.n||b.e.t-a.e.t);
+  const subjL=ecatSubjects();if(ui.dsubj&&!subjL.includes(ui.dsubj))ui.dsubj=null;const SJ=ui.dsubj;
+  if(SJ)for(const r of rows){const x=(E.detail[r.s.id]||[]).find(y=>y.s===SJ)||{g:'',m:0,n:0};const gs=String(x.g||'').split(',').map(g=>parseInt(g)).filter(v=>!isNaN(v));r.sx={gs,n:x.n||0,t:(x.m||0)+(x.n||0),av:gs.length?gs.reduce((a,b)=>a+b,0)/gs.length:null}}
+  if(ui.dsort==='abs')rows.sort(SJ?(a,b)=>b.sx.n-a.sx.n||b.sx.t-a.sx.t:(a,b)=>b.e.n-a.e.n||b.e.t-a.e.t);
   const tT=rows.reduce((x,r)=>x+r.e.t,0),tN=rows.reduce((x,r)=>x+r.e.n,0),low=rows.filter(r=>r.cd.val<10).length;const pend=pendingDocs();
   const top=[...rows].sort((a,b)=>b.e.n-a.e.n).filter(r=>r.e.n>0).slice(0,5);const mx=Math.max(1,...top.map(r=>r.e.n));
   const bySub={};if(E&&E.detail)for(const r of rows)for(const x of (E.detail[r.s.id]||[])){const k=x.s;bySub[k]=bySub[k]||{t:0,n:0};bySub[k].t+=x.m+x.n;bySub[k].n+=x.n}
@@ -1076,10 +1095,10 @@ function vDir(){
     ${top.length?`<div><div class="lbl" style="margin-bottom:8px">Cele mai multe nemotivate</div>${top.map(r=>bar(esc(r.s.name.split(' ').slice(0,2).join(' ')),r.e.n,mx,`din ${r.e.t}`,r.e.n>=thrOf()?sevC(r.e.n):'var(--tx3)')).join('')}</div>`:''}
     ${subs.length?`<div><div class="lbl" style="margin-bottom:8px">Nemotivate pe materii</div>${subs.map(([k,v])=>bar(esc(k.replace(/^M\d+:\s*/,'').slice(0,26)),v.n,mxs,`din ${v.t}`,'var(--warn)')).join('')}</div>`:''}</div>`;
   const docsBox=pend.length?`<div><div class="row between"><div class="sec">Documente de trecut în catalog</div><span class="pill" style="color:var(--warn)">${pend.length}</span></div><div class="list">${pend.slice(0,4).map(x=>docRow(x)).join('')}</div>${pend.length>4?`<button class="btn sm" data-a="docAll" style="margin-top:8px">Vezi toate (${pend.length})</button>`:''}</div>`:'';
-  const list=`<div><div class="row between"><div class="sec">Elevi · ${st.length}</div><div class="seg" style="padding:3px"><button class="${ui.dsort!=='abs'?'on':''}" data-a="dsort" data-v="az" style="height:28px;padding:0 10px;font-size:12px">A–Z</button><button class="${ui.dsort==='abs'?'on':''}" data-a="dsort" data-v="abs" style="height:28px;padding:0 10px;font-size:12px">Nemotivate</button></div></div>
+  const list=`<div><div class="row between" style="gap:8px;flex-wrap:wrap"><div class="sec">Elevi · ${st.length}</div><div class="row dctl" style="gap:8px">${subjL.length?`<select class="in dsel" data-c="dsubj" aria-label="Disciplină"><option value="">Toate disciplinele</option>${subjL.map(x=>`<option value="${esc(x)}" ${x===SJ?'selected':''}>${esc(x.replace(/^M(\d+):\s*/,'M$1 · ').slice(0,44))}</option>`).join('')}</select>`:''}<div class="seg" style="padding:3px"><button class="${ui.dsort!=='abs'?'on':''}" data-a="dsort" data-v="az" style="height:28px;padding:0 10px;font-size:12px">A–Z</button><button class="${ui.dsort==='abs'?'on':''}" data-a="dsort" data-v="abs" style="height:28px;padding:0 10px;font-size:12px">Nemotivate</button></div></div></div>
     ${hintOn('dir')?'<div class="dim" style="font-size:12px;margin:2px 0 4px">Glisează pe elev: spre dreapta = adaugă motivare · spre stânga = fișa elevului</div>':''}<div class="list dirl" style="grid-template-rows:repeat(${Math.ceil(rows.length/2)},auto)">${rows.map(r=>`<div class="srow"><div class="swbg"><span class="l">${ic('doc',18)} Motivare</span><span class="r">Fișa ${ic('cr',18)}</span></div><div class="sfg dfg" data-a="dirStudent" data-id="${r.s.id}" role="button" tabindex="0"><div class="grow" style="min-width:0"><div class="nm">${esc(r.s.name)}</div>
-      <div class="sub">${r.e.t?`<span style="color:${r.e.n?sevC(r.e.n):'inherit'};font-weight:600">${r.e.n} nem.</span> din ${r.e.t}`:'fără absențe'}${r.docs.length?`${[r.cov.med?`medicale ${r.cov.med}`:'',r.cov.cer?cerTxt(r.cov):''].filter(Boolean).map(t=>' · '+t).join('')}${r.pend?` · <span style="color:var(--warn)">${r.pend} de motivat</span>`:''}`:''}${r.cd.val<10?` · <span style="color:${cdC(r.cd.val)};font-weight:600">purtare ${r.cd.val}</span>`:''}</div></div>
-      <div class="tnum" style="font-size:19px;font-weight:600;width:34px;text-align:right;color:${sevC(r.e.n)}">${r.e.n}</div></div></div>`).join('')}</div></div>`;
+      ${SJ?subjRow(r):`<div class="sub">${r.e.t?`<span style="color:${r.e.n?sevC(r.e.n):'inherit'};font-weight:600">${r.e.n} nem.</span> din ${r.e.t}`:'fără absențe'}${r.docs.length?`${[r.cov.med?`medicale ${r.cov.med}`:'',r.cov.cer?cerTxt(r.cov):''].filter(Boolean).map(t=>' · '+t).join('')}${r.pend?` · <span style="color:var(--warn)">${r.pend} de motivat</span>`:''}`:''}${r.cd.val<10?` · <span style="color:${cdC(r.cd.val)};font-weight:600">purtare ${r.cd.val}</span>`:''}</div></div>
+      <div class="tnum" style="font-size:19px;font-weight:600;width:34px;text-align:right;color:${sevC(r.e.n)}">${r.e.n}</div>`}</div></div>`).join('')}</div></div>`;
   const sed=live('events').filter(e=>e.type==='sedinta'||/ședin/i.test(e.title)).filter(e=>(e.end||e.start)>=d&&(!(e.classIds||[]).length||e.classIds.includes(hc.id))).slice(0,2);
   const sedBox=`<div><div class="row between"><div class="sec">Ședințe cu părinții</div><button class="btn sm" data-a="sedinta" style="height:32px">${ic('plus',16)} Ședință</button></div>${sed.length?`<div class="list">${sed.map(e=>evRow(e,d)).join('')}</div>`:'<p class="muted" style="font-size:14px;margin:6px 0">Nicio ședință programată.</p>'}</div>`;
   return hdr(`Diriginție · ${plural(st.length,'elev','elevi')}`,`Clasa ${esc(hc.name)}`)+
@@ -1114,8 +1133,12 @@ function classTT(c){
     <details style="margin-top:10px"><summary class="muted" style="font-size:13px;cursor:pointer">Legendă</summary><div style="font-size:13px;color:var(--tx2);line-height:1.7;margin-top:6px">${[...used].map(k=>`<b>${esc(k)}</b> ${esc(tt.legend?.[k]||'')}`).join(' · ')}<br>${[...tused].map(k=>`<b>${esc(k)}</b> ${esc(tt.teachers?.[k]||'')}`).join(' · ')}</div></details></div></div>`;
 }
 const fmtDots=str=>String(str||'').split(',').map(x=>x.trim()).filter(Boolean).map(x=>{const[dd,mm]=x.split('.').map(Number);return mm?`${dd} ${LUNI_S[mm-1]}`:x}).join(', ');
+const SRANK=[/limba (și literatura )?rom/i,/matematic/i,/englez/i,/francez/i,/german|spaniol|italian|rus[aă]/i,/fizic[aă](?!.*sport)/i,/chimie/i,/biologie/i,/^istorie/i,/geografie/i,/./];
+const subjRank=n=>{const t=String(n||'');const m=t.match(/^M(\d+)\s*:/);if(m)return 100+ +m[1];if(/tehnologia informa|^tic\b|informatic/i.test(t))return 200;if(/religie/i.test(t))return 201;if(/educa[tț]ie fizic|sport/i.test(t))return 202;return SRANK.findIndex(r=>r.test(t))};
+const subjSort=(a,b)=>subjRank(a.s)-subjRank(b.s)||a.s.localeCompare(b.s,'ro');
+const ecatSubjects=()=>{const E=S.ecat;if(!E||!E.detail)return[];const set=new Set();for(const v of Object.values(E.detail))for(const x of v)set.add(x.s);return [...set].map(s=>({s})).sort(subjSort).map(x=>x.s)};
 function ecatDetail(sid){
-  const E=S.ecat;if(!E||!E.detail||!E.detail[sid])return '';const rows=E.detail[sid].filter(x=>x.a||x.g);
+  const E=S.ecat;if(!E||!E.detail||!E.detail[sid])return '';const rows=E.detail[sid].filter(x=>x.a||x.g).sort(subjSort);
   return `<div class="sec">Din catalogul electronic · ${fmtDs(E.date)}</div>
    <div class="row" style="gap:10px">${E.avg?.[sid]?`<div class="stat grow"><b class="tnum">${esc(E.avg[sid])}</b><small>media generală</small></div>`:''}${E.cond?.[sid]?`<div class="stat grow"><b class="tnum">${esc(String(E.cond[sid]).split('/')[0])}</b><small>purtare trecută · ${esc(fmtDots(String(E.cond[sid]).split('/')[1]||''))}</small></div>`:''}</div>
    ${rows.length?`<div class="list">${rows.map(x=>`<div class="li" style="min-height:48px;align-items:flex-start;padding:10px 0"><div class="grow"><div style="font-size:14px;font-weight:500">${esc(x.s)}</div>
@@ -1123,7 +1146,7 @@ function ecatDetail(sid){
      ${x.a?`<div class="sub">Absențe: ${esc(fmtDots(x.a))}</div>`:''}</div>${x.m+x.n?`<div style="text-align:right;flex:none"><div class="tnum" style="font-size:17px;font-weight:700;color:${x.n?'var(--warn)':'var(--tx4)'}">${x.n} <span style="font-size:12px;font-weight:600">nem.</span></div><div class="sub" style="margin:0">din ${x.m+x.n}</div></div>`:''}</div>`).join('')}</div>`:''}`;
 }
 function ecatTable(sid){
-  const E=S.ecat;if(!E||!E.detail||!E.detail[sid])return '';const rows=E.detail[sid].filter(x=>x.a||x.g||x.n).sort((a,b)=>(b.n-a.n)||a.s.localeCompare(b.s,'ro'));
+  const E=S.ecat;if(!E||!E.detail||!E.detail[sid])return '';const rows=E.detail[sid].filter(x=>x.a||x.g||x.n).sort(subjSort);
   return `<div class="row between" style="margin-bottom:6px"><div class="sec" style="margin:0">Din catalogul electronic · ${fmtDs(E.date)}</div><div class="row" style="gap:12px;font-size:12px;color:var(--tx3)">${E.avg?.[sid]?`<span>media din catalog <b class="tnum" style="color:var(--tx);font-size:14px">${esc(E.avg[sid])}</b></span>`:''}${E.cond?.[sid]?`<span>purtare trecută <b class="tnum" style="color:var(--tx);font-size:14px">${esc(String(E.cond[sid]).split('/')[0])}</b></span>`:''}</div></div>
    <table><thead><tr><th>Materie</th><th>Note</th><th>Absențe (data)</th><th class="n">Nem.</th></tr></thead><tbody>${rows.map(x=>`<tr class="${x.n?'hot':''}"><td style="font-weight:500">${esc(x.s)}</td><td><span class="gchips">${(x.g||'').split(',').filter(Boolean).map(g=>{const v=parseInt(g);return `<span class="g ${v<5?'low':''}">${isNaN(v)?esc(g):v}</span>`}).join('')}</span></td><td style="color:var(--tx3);font-size:12px">${x.a?esc(fmtDots(x.a)):''}</td><td class="n">${x.n?`<span class="nempill" style="background:rgba(255,176,103,.15);color:var(--warn)">${x.n}</span>`:'<span style="color:var(--tx4)">·</span>'}</td></tr>`).join('')}</tbody></table>`;
 }
@@ -1131,8 +1154,8 @@ function shDirStudent(id){
   const s=byId('students',id);if(!s)return sheetHead('','Elev șters');const c=byId('classes',s.classId);
   const ds=live('docs').filter(d=>d.studentId===s.id).sort((a,b)=>(a.received||'')<(b.received||'')?1:-1);
   const nd=ds.reduce((x,d)=>x+schoolDays(d.from,d.to),0);
-  const top=(()=>{const e=ecatOf(s.id);const cd=conductOf(s);return S.ecat?`<div class="row" style="gap:10px"><div class="stat grow"><b class="tnum" style="color:${e&&e.n?sevC(e.n):'inherit'}">${e?e.n:0}<span> din ${e?e.t:0}</span></b><small>nemotivate · catalog electronic ${fmtDs(S.ecat.date)}</small></div><label class="stat grow cdst"><b class="tnum" style="color:${cd.val<10?cdC(cd.val):'var(--ac)'}">${cd.val}</b><small>purtare · ${cd.manual?'pusă de tine':`estimată, prag ${S.settings.dirThr}`} <span style="color:var(--ac)">· schimbă</span></small><select aria-label="Nota la purtare" data-c="conduct" data-id="${s.id}"><option value="auto" ${!cd.manual?'selected':''}>Estimată (${cd.auto}) · ${cd.nem} nem., prag ${S.settings.dirThr}</option>${[10,9,8,7,6,5,4,3,2,1].map(v=>`<option value="${v}" ${cd.manual&&s.conduct===v?'selected':''}>${v}</option>`).join('')}</select></label></div>`:''})();
-  const cov=(()=>{const cv=docCover(s.id);const u=cv.days?'zile':'absențe';return `<div class="row" style="gap:10px"><div class="stat grow"><b class="tnum">${cv.med}</b><small>${u} cu adeverință medicală</small></div><div class="stat grow"><b class="tnum" style="color:${cv.cer>=cerMax()?'var(--danger,#FF6B6B)':cv.cer>=cerMax()-10?'var(--warn)':'inherit'}">${cv.cer}<span> / ${cerMax()}</span></b><small>${u} cu cerere · maximum pe an</small></div></div><div class="sub" style="margin-top:-4px">${plural(ds.length,'document','documente')} · ${plural(nd,'zi de curs acoperită','zile de curs acoperite')}</div>`})();
+  const top=(()=>{const e=ecatOf(s.id);const cd=conductOf(s);return S.ecat?`<div class="row srw" style="gap:10px"><div class="stat grow"><b class="tnum" style="color:${e&&e.n?sevC(e.n):'inherit'}">${e?e.n:0}<span> din ${e?e.t:0}</span></b><small>nemotivate · catalog electronic ${fmtDs(S.ecat.date)}</small></div><label class="stat grow cdst"><b class="tnum" style="color:${cd.val<10?cdC(cd.val):'var(--ac)'}">${cd.val}</b><small>purtare · ${cd.manual?'pusă de tine':`estimată, prag ${S.settings.dirThr}`} <span style="color:var(--ac)">· schimbă</span></small><select aria-label="Nota la purtare" data-c="conduct" data-id="${s.id}"><option value="auto" ${!cd.manual?'selected':''}>Estimată (${cd.auto}) · ${cd.nem} nem., prag ${S.settings.dirThr}</option>${[10,9,8,7,6,5,4,3,2,1].map(v=>`<option value="${v}" ${cd.manual&&s.conduct===v?'selected':''}>${v}</option>`).join('')}</select></label></div>`:''})();
+  const cov=(()=>{const cv=docCover(s.id);const u=cv.days?'zile':'absențe';return `<div class="row srw" style="gap:10px"><div class="stat grow"><b class="tnum">${cv.med}</b><small>${u} cu adeverință medicală</small></div><div class="stat grow"><b class="tnum" style="color:${cv.cer>=cerMax()?'var(--danger,#FF6B6B)':cv.cer>=cerMax()-10?'var(--warn)':'inherit'}">${cv.cer}<span> / ${cerMax()}</span></b><small>${u} cu cerere · maximum pe an</small></div></div><div class="sub" style="margin-top:-4px">${plural(ds.length,'document','documente')} · ${plural(nd,'zi de curs acoperită','zile de curs acoperite')}</div>`})();
   const add=`<label class="btn pri" style="position:relative">${ic('doc',18)} Adaugă motivare<input type="file" accept="image/*,application/pdf" data-c="quickDoc" data-sid="${s.id}" style="position:absolute;opacity:0;width:1px;height:1px"></label>
    <button class="lnk" data-a="docNew" data-sid="${s.id}" style="align-self:center;font-size:14px;padding:0">sau fără poză</button>`;
   const dl=ds.length?`<div class="list">${ds.map(d=>docRow(d,false)).join('')}</div>`:'<p class="dim" style="font-size:14px;margin:0">Niciun document.</p>';
@@ -1610,6 +1633,7 @@ document.addEventListener('touchend',()=>{if(!SW)return;const s=SW;SW=null;if(s.
   else if(s.c&&Math.abs(s.dx)>50){if(s.c.classList.contains('calswipe'))hintUsed('cal');if(s.c.classList.contains('ttswipe')){const hc=homeroom();if(hc&&hc.tt){ui.ttMode=(ui.ttMode==='cls')?'me':'cls';render(false)}}else A.calMove({n:s.dx<0?1:-1})}});
 document.addEventListener('click',e=>{if(Date.now()-swallow<350){e.preventDefault();e.stopPropagation();return}if(e.target.id==='viewer'){A.viewClose();return}const el=e.target.closest('[data-a]');if(!el)return;const f=A[el.dataset.a];if(f){e.preventDefault();f(el.dataset,el)}});
 const CH={
+  dsubj:el=>{ui.dsubj=el.value||null;render(false)},
   name:el=>setS(s=>s.name=el.value.trim()),school:el=>setS(s=>s.school=el.value.trim()),
   accent:el=>{setS(s=>s.accent=el.value);applyTheme();render(false)},
   gk:el=>{ui.gk=el.value},
