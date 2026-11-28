@@ -717,7 +717,7 @@ const avOk=i=>AVATARS[i]&&!(AVATARS[i].k==='img'&&!AVATARS[i].src);
 const meBadge=()=>S.settings.avatar!=null&&avOk(S.settings.avatar)?`<span class="avb">${avatarSvg(S.settings.avatar,44)}</span>`:(S.settings.name?esc(initials(S.settings.name)):ic('user',20));
 
 /* ---------- versiune / actualizare ---------- */
-const APP_VER='5.4';
+const APP_VER='5.5';
 const NEWS=['Foile se închid trăgând în jos','Toate orele din ceas funcționează','Butonul + Ședință repornit','Nemotivatele pe primul loc','Absențe cu adeverință și cu cerere (maximum 40) la fiecare elev','Ceas cu toate orele, și seara','Note mai mari, clasele pe tot rândul'];
 function checkUpdate(){fetch('./?u='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER='([^']+)'/);if(m&&m[1]!==APP_VER)showUpd(m[1])}).catch(()=>{})}
 function showUpd(v){const b=$('#upd');b.innerHTML=`<div class="grow"><b>Versiune nouă · ${esc(v)}</b><div class="sub" style="margin:0">Atinge pentru actualizare</div></div><button class="btn sm pri" data-a="doUpd">Actualizează</button>`;b.classList.add('show')}
@@ -1669,7 +1669,7 @@ function loadDemo(){
   const F=['Andrei','Bianca','Cristian','Diana','Eduard','Ioana','Mihai','Raluca','Alexandru','Maria','Ștefan','Elena','Darius','Sara','Tudor','Ana','Matei','Ilinca','Luca','Carla'];
   const L=['Popescu','Ionescu','Munteanu','Rusu','Ciobanu','Lungu','Ursu','Moldovan','Pavel','Tănase','Cozma','Bălan','Grigore','Avram','Năstase'];
   const t=Date.now();const keepS={...S.settings};S=blank();S.settings={...S.settings,...keepS,updatedAt:t};S.meta.onboarded=true;
-  const cl=[['XII-E','Rețele de calculatoare','#8B9CFF',true,28],['XII-C','Securitatea sistemelor','#FF9F43',true,24],['XI-A','Sisteme de operare','#5BD38A',false,26],['X-B','Informatică','#4CC9F0',false,25]];
+  const cl=[['XII-E','Matematică','#8B9CFF',true,28],['XII-C','Limba și literatura română','#FF9F43',true,24],['XI-A','Istorie','#5BD38A',false,26],['X-B','Chimie','#4CC9F0',false,25]];
   const ids={};
   for(const[n,sub,col,term,cnt]of cl){const id=uid();ids[n]=id;S.classes.push({id,name:n,subject:sub,color:col,terminal:term,updatedAt:t});
     const used=new Set();for(let i=0;i<cnt;i++){let nm;do{nm=`${pick(L)} ${pick(F)}`}while(used.has(nm));used.add(nm);const sid=uid()+i;S.students.push({id:sid,classId:id,name:nm,updatedAt:t});
@@ -1679,12 +1679,12 @@ function loadDemo(){
       const na=rnd()<.6?Math.floor(rnd()*4):Math.floor(rnd()*12);for(let j=0;j<na;j++){let dd=addDays(d0,-Math.floor(rnd()*60)-1);while(dow(dd)>5||dayInfo(dd).kind!=='school')dd=addDays(dd,-1);S.absences.push({id:uid()+'a'+i+j,studentId:sid,classId:id,date:dd,hour:null,motivated:rnd()<.45,updatedAt:t})}
     }}
   const sl=[[1,1,'X-B'],[1,2,'XII-C'],[1,4,'XII-E'],[1,5,'XI-A'],[2,2,'XII-E'],[2,3,'X-B'],[2,6,'XI-A'],[3,1,'XII-C'],[3,3,'XI-A'],[3,4,'XII-E'],[4,2,'X-B'],[4,3,'XII-E'],[4,4,'XII-C'],[5,2,'XI-A'],[5,3,'XII-E'],[5,5,'XII-C'],[5,6,'XII-E','Dirigenție']];
-  for(const[d,h,c,sub]of sl)S.slots.push({id:uid()+d+h,day:d,hour:h,classId:ids[c],subject:sub||'',room:c==='XII-E'?'Laborator 2':c==='XII-C'?'Laborator 1':'Sala 14',updatedAt:t});
-  const d=today();const ev=[['Ședința cu părinții','sedinta',4,0,['XII-E']],['Practică – rețele locale','practica',9,4,['XII-E']],['Olimpiada de informatică – etapa pe școală','olimpiada',16,0,['XI-A','X-B']],
-    ['Concurs de securitate cibernetică','concurs',23,0,['XII-C']],['Simulare Bacalaureat – proba de competențe digitale','simulare',38,0,['XII-E','XII-C']],['Școala altfel','altfel',60,4,[]],['Lansare proiecte – Ziua porților deschise','eveniment',30,0,['X-B']]];
+  for(const[d,h,c,sub]of sl)S.slots.push({id:uid()+d+h,day:d,hour:h,classId:ids[c],subject:sub||'',room:c==='XII-E'?'12':c==='XII-C'?'9':c==='X-B'?'3':'14',updatedAt:t});
+  const d=today();const ev=[['Ședința cu părinții','sedinta',4,0,['XII-E']],['Recapitulare Bacalaureat – matematică','eveniment',9,4,['XII-E']],['Olimpiada de chimie – etapa pe școală','olimpiada',16,0,['X-B']],
+    ['Concurs de creație literară','concurs',23,0,['XII-C']],['Simulare Bacalaureat – probele scrise','simulare',38,0,['XII-E','XII-C']],['Școala altfel','altfel',60,4,[]],['Expoziție de proiecte – Ziua porților deschise','eveniment',30,0,['X-B']]];
   for(const[ti,ty,o,len,cs]of ev){let st=addDays(d,o);while(dow(st)>5)st=addDays(st,1);S.events.push({id:uid()+o,title:ti,type:ty,start:st,end:addDays(st,len),classIds:cs.map(c=>ids[c]),note:'',updatedAt:t})}
   S.classes.find(c=>c.id===ids['XII-E']).homeroom=true;
-  const other=['Matematică','Limba și literatura română','Fizică','Limba engleză','Istorie','Educație fizică'];
+  const other=['Matematică','Limba și literatura română','Fizică','Limba engleză','Istorie','Chimie','Educație fizică'];
   for(const st of S.students){if(rnd()<.5){const np=Math.floor(rnd()*5);for(let j=0;j<np;j++){let dd=addDays(today(),-Math.floor(rnd()*14));while(dow(dd)>5)dd=addDays(dd,-1);S.points.push({id:uid()+'p'+j+st.id,studentId:st.id,classId:st.classId,k:rnd()<.6?'+':'-',date:dd,used:false,updatedAt:t})}}
     if(st.classId===ids['XII-E']&&rnd()<.7){const nd=Math.floor(rnd()*4)+1;for(let j=0;j<nd;j++){let dd=addDays(today(),-Math.floor(rnd()*70)-1);while(dow(dd)>5||dayInfo(dd).kind!=='school')dd=addDays(dd,-1);const mot=rnd()<.5;const h=Math.floor(rnd()*3)+1;
       for(let k=0;k<h;k++)S.absences.push({id:uid()+'o'+j+k+st.id,studentId:st.id,classId:st.classId,date:dd,hour:null,subject:pick(other),motivated:mot,updatedAt:t})}}}
